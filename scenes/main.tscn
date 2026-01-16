@@ -1,0 +1,47 @@
+[gd_scene load_steps=3 format=3 uid="uid://cr7yjlywgjqbs"]
+
+[ext_resource type="Script" path="res://scripts/tetris_game.gd" id="1_kn8dx"]
+[ext_resource type="Script" path="res://scripts/ui_controller.gd" id="2_t2s5h"]
+
+[node name="Main" type="Node2D"]
+
+[node name="TetrisGame" type="Node2D" parent="."]
+script = ExtResource("1_kn8dx")
+
+[node name="UI" type="CanvasLayer" parent="."]
+script = ExtResource("2_t2s5h")
+
+[node name="ScoreLabel" type="Label" parent="UI"]
+offset_left = 320.0
+offset_top = 20.0
+offset_right = 460.0
+offset_bottom = 46.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 20
+text = "Score: 0"
+
+[node name="GameOverLabel" type="Label" parent="UI"]
+offset_left = 60.0
+offset_top = 300.0
+offset_right = 300.0
+offset_bottom = 380.0
+theme_override_colors/font_color = Color(1, 0, 0, 1)
+theme_override_font_sizes/font_size = 32
+text = "GAME OVER
+Press Enter to Restart"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="InstructionsLabel" type="Label" parent="UI"]
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 300.0
+offset_bottom = 150.0
+theme_override_colors/font_color = Color(0.8, 0.8, 0.8, 1)
+theme_override_font_sizes/font_size = 14
+text = "Controls:
+← / A: Move Left
+→ / D: Move Right
+↓ / S: Move Down
+↑ / W / Space: Rotate
+Enter: Hard Drop"
