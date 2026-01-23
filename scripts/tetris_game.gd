@@ -77,6 +77,7 @@ func _ready():
 	initialize_board()
 	spawn_piece()
 	update_ui()
+	background.volume_linear = 0.25
 	background.play()
 
 ## Initializes the game board as a 2D array filled with null values.
@@ -282,7 +283,8 @@ func clear_lines():
 	if lines_cleared > 0:
 		score += [0, 40, 100, 300, 1200][lines_cleared]
 		print("Lines cleared: ", lines_cleared, " | Score: ", score)
-		update_ui()
+		update_ui()		
+		# play point sound instead
 		sfx_points.play()
 
 ## Custom drawing function to render the game board and current piece.
