@@ -1,10 +1,10 @@
-# Sound Effect Sequencing - Implementation Summary
+# Sound Effect Implementation - Conditional Playback
 
 ## Problem
 `sfx_points` was playing at the same time as `sfx_landing`, creating overlapping audio.
 
 ## Solution
-Implemented sequential audio playback using Godot's signal system.
+Implemented conditional audio playback based on whether a score was achieved.
 
 ## Flow Diagram
 
@@ -23,109 +23,87 @@ Play sfx_landing ♪
 Result: Both sounds play at the same time! ✗
 ```
 
-### After (Sequential Playback):
+### After (Conditional Playback):
 ```
 Piece Lands
     ↓
-clear_lines() called
+clear_lines() called → Returns number of lines cleared
     ↓
-Lines cleared? → YES → Set flag: should_play_points_after_landing = true
-                → NO  → Do nothing
-    ↓
-Play sfx_landing ♪ (starts playing)
-    ↓
-[Wait for sfx_landing to finish...]
-    ↓
-sfx_landing finishes → Emits "finished" signal
-    ↓
-_on_landing_sound_finished() called
-    ↓
-Check flag: should_play_points_after_landing?
+Lines cleared > 0?
     ↓
 YES → Play sfx_points ♪
-      Clear flag
     ↓
-NO  → Do nothing
+NO  → Play sfx_landing ♪
 
-Result: Sounds play in sequence! ✓
+Result: Only one sound plays based on context! ✓
 ```
 
 ## Code Components
 
-### 1. State Flag
-```gdscript
-var should_play_points_after_landing = false
-```
-Tracks whether points sound should play after landing sound completes.
-
-### 2. Signal Connection
-```gdscript
-func _ready():
-    # ... other initialization ...
-    sfx_landing.finished.connect(_on_landing_sound_finished)
-```
-Connects the `finished` signal from audio player to our callback.
-
-### 3. Modified clear_lines()
+### 1. Modified clear_lines()
 ```gdscript
 func clear_lines() -> int:
     # ... line clearing logic ...
     if lines_cleared > 0:
         score += [0, 40, 100, 300, 1200][lines_cleared]
         update_ui()
-        # Set flag instead of playing sound
-        should_play_points_after_landing = true
+        # No sound logic here - just return the count
     return lines_cleared
 ```
-Sets flag when lines are cleared instead of playing sound immediately.
+Returns the number of lines cleared for conditional sound logic.
 
-### 4. Landing Sound Trigger
+### 2. Conditional Sound in move_down()
 ```gdscript
 func move_down():
     if not move_piece(0, 1):
         lock_piece()
-        clear_lines()
+        var lines_cleared = clear_lines()
         spawn_piece()
-        sfx_landing.play()  # Play landing sound
+        # Play points sound if lines were cleared, otherwise landing sound
+        if lines_cleared > 0:
+            sfx_points.play()
+        else:
+            sfx_landing.play()
+```
+Plays appropriate sound based on whether lines were cleared.
 
+### 3. Conditional Sound in hard_drop()
+```gdscript
 func hard_drop():
     # ... drop logic ...
     lock_piece()
-    clear_lines()
+    var lines_cleared = clear_lines()
     spawn_piece()
-    sfx_landing.play()  # Play landing sound
-```
-Both functions now play landing sound after locking piece.
-
-### 5. Signal Callback
-```gdscript
-func _on_landing_sound_finished():
-    if should_play_points_after_landing:
-        should_play_points_after_landing = false
+    # Play points sound if lines were cleared, otherwise landing sound
+    if lines_cleared > 0:
         sfx_points.play()
+    else:
+        sfx_landing.play()
 ```
-Plays points sound after landing sound finishes, if flag is set.
+Same conditional logic as `move_down()`.
 
 ## Key Benefits
 
-1. ✅ **Minimal Changes**: Only modified what's necessary
-2. ✅ **Clean Implementation**: Uses Godot's built-in signal system
-3. ✅ **Maintainable**: Clear logic flow with good comments
-4. ✅ **Reliable**: Flag ensures no race conditions
-5. ✅ **Extensible**: Easy to add more sequenced sounds if needed
+1. ✅ **Simpler Implementation**: No signals, callbacks, or flags needed
+2. ✅ **Intuitive Behavior**: Points sound for scoring, landing sound for non-scoring
+3. ✅ **Minimal Changes**: Only modified what's necessary
+4. ✅ **Maintainable**: Clear conditional logic, easy to understand
+5. ✅ **No Overlap**: Only one sound plays at a time
 
 ## Testing Scenarios
 
-| Scenario | Landing Sound | Points Sound | Expected Behavior |
-|----------|--------------|--------------|-------------------|
-| Hard drop, no lines | ✓ Plays | ✗ Silent | Landing only |
-| Hard drop, 1+ lines | ✓ Plays first | ✓ Plays after | Sequential |
-| Normal drop, no lines | ✓ Plays | ✗ Silent | Landing only |
-| Normal drop, 1+ lines | ✓ Plays first | ✓ Plays after | Sequential |
-| Multiple lines (2-4) | ✓ Plays first | ✓ Plays after | Sequential |
+| Scenario | Lines Cleared | Sound Played | Behavior |
+|----------|---------------|--------------|----------|
+| Hard drop, no lines | 0 | `sfx_landing` | Landing only |
+| Hard drop, 1+ lines | 1-4 | `sfx_points` | Points only |
+| Normal drop, no lines | 0 | `sfx_landing` | Landing only |
+| Normal drop, 1+ lines | 1-4 | `sfx_points` | Points only |
 
 ## Files Changed
 
-- **Modified**: `scripts/tetris_game.gd` (24 lines added, 5 lines removed)
-- **Added**: `TESTING_SOUND_FIX.md` (test documentation)
-- **Added**: `IMPLEMENTATION_SUMMARY.md` (this file)
+- **Modified**: `scripts/tetris_game.gd` (13 lines added, 22 lines removed)
+  - Removed signal connection and callback
+  - Added conditional sound logic to `move_down()` and `hard_drop()`
+  - Simplified `clear_lines()` to just return count
+- **Updated**: `TESTING_SOUND_FIX.md` (test documentation)
+- **Updated**: `IMPLEMENTATION_SUMMARY.md` (this file)

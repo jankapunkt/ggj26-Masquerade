@@ -1,7 +1,9 @@
 # Testing Sound Effect Fix
 
 ## Issue Fixed
-`sfx_points` now plays only after `sfx_landing` has completed, instead of both playing simultaneously.
+Sound effects now play conditionally based on whether a score was achieved:
+- **Score achieved** (lines cleared): `sfx_points` plays
+- **No score** (piece lands without clearing lines): `sfx_landing` plays
 
 ## How to Test
 
@@ -14,53 +16,48 @@
 2. Arrange pieces so that a hard drop (press Enter) will complete a line
 3. Execute the hard drop
 4. **Expected Result**: 
-   - You should hear the landing sound (`sfx_landing`) first
-   - After the landing sound completes, you should hear the points sound (`sfx_points`)
-   - The sounds should NOT play simultaneously
+   - You should hear the points sound (`sfx_points`) only
+   - No landing sound should play
 
 ### Test Case 2: Normal Drop with Line Clear
 1. Play the game normally
 2. Arrange pieces so that letting a piece fall naturally will complete a line
 3. Let the piece fall and lock automatically
 4. **Expected Result**: 
-   - You should hear the landing sound (`sfx_landing`) first
-   - After the landing sound completes, you should hear the points sound (`sfx_points`)
-   - The sounds should NOT play simultaneously
+   - You should hear the points sound (`sfx_points`) only
+   - No landing sound should play
 
 ### Test Case 3: Landing without Line Clear
 1. Play the game normally
 2. Execute a hard drop or let a piece fall that does NOT complete a line
 3. **Expected Result**: 
-   - You should only hear the landing sound (`sfx_landing`)
-   - No points sound should play (because no lines were cleared)
+   - You should hear the landing sound (`sfx_landing`) only
+   - No points sound should play
 
 ### Test Case 4: Multiple Lines Cleared
 1. Arrange pieces to clear multiple lines at once (2-4 lines)
 2. Complete the lines with either hard drop or normal drop
 3. **Expected Result**: 
-   - You should hear the landing sound (`sfx_landing`) first
-   - After the landing sound completes, you should hear the points sound (`sfx_points`) once
-   - The sounds should sequence properly regardless of how many lines are cleared
+   - You should hear the points sound (`sfx_points`) only
+   - No landing sound should play
 
 ## Code Changes Summary
 
 ### Key Changes Made:
-1. **Added flag**: `should_play_points_after_landing` to track when to play points sound
-2. **Signal connection**: Connected `sfx_landing.finished` signal to callback function
-3. **Modified `clear_lines()`**: Sets flag instead of playing sound immediately
-4. **Updated `move_down()` and `hard_drop()`**: Both now play landing sound after locking
-5. **Added callback**: `_on_landing_sound_finished()` plays points sound when flag is set
+1. **Removed signal-based sequencing**: No longer using `finished` signal from `sfx_landing`
+2. **Simplified clear_lines()**: Just updates score, no sound logic
+3. **Updated move_down() and hard_drop()**: Conditionally play sounds based on lines cleared
+4. **Removed callback**: No need for `_on_landing_sound_finished()` function
 
 ### How It Works:
-- When a piece lands, `sfx_landing.play()` is called
-- If lines were cleared, `should_play_points_after_landing` is set to true
-- When `sfx_landing` finishes playing, it triggers the `finished` signal
-- The callback checks the flag and plays `sfx_points` if it's set
-- This ensures sequential playback: landing sound → points sound
+- When a piece lands, `clear_lines()` returns the number of lines cleared
+- If lines were cleared (> 0), play `sfx_points`
+- If no lines cleared (= 0), play `sfx_landing`
+- Simple conditional logic, no timers or signals needed
 
 ## Verification Checklist
-- [ ] Landing sound plays when piece locks (both hard drop and normal drop)
-- [ ] Points sound plays AFTER landing sound completes when lines are cleared
-- [ ] Points sound does NOT play when no lines are cleared
-- [ ] No simultaneous playback of landing and points sounds
+- [ ] Points sound plays when lines are cleared (any amount)
+- [ ] Landing sound plays when piece locks without clearing lines
+- [ ] Only one sound plays at a time (no overlapping)
+- [ ] Works correctly for hard drop and normal drop
 - [ ] Works correctly for single line, double, triple, and tetris (4 lines)
