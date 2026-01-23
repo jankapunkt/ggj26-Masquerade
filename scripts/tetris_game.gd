@@ -176,11 +176,7 @@ func move_down():
 		lock_piece()
 		var lines_cleared = clear_lines()
 		spawn_piece()
-		# Play points sound if lines were cleared, otherwise landing sound
-		if lines_cleared > 0:
-			sfx_points.play()
-		else:
-			sfx_landing.play()
+		play_landing_sound(lines_cleared)
 
 ## Instantly drops the current piece to the lowest valid position.
 func hard_drop():
@@ -189,11 +185,7 @@ func hard_drop():
 	lock_piece()
 	var lines_cleared = clear_lines()
 	spawn_piece()
-	# Play points sound if lines were cleared, otherwise landing sound
-	if lines_cleared > 0:
-		sfx_points.play()
-	else:
-		sfx_landing.play()
+	play_landing_sound(lines_cleared)
 	
 
 ## Rotates the current piece 90 degrees clockwise.
@@ -266,6 +258,14 @@ func lock_piece():
 				var board_y = piece_y + sy
 				if board_y >= 0 and board_y < BOARD_HEIGHT:
 					board[board_y][board_x] = current_color
+
+## Plays appropriate sound effect based on whether lines were cleared.
+## If lines were cleared (score achieved), plays points sound, otherwise plays landing sound.
+func play_landing_sound(lines_cleared: int):
+	if lines_cleared > 0:
+		sfx_points.play()
+	else:
+		sfx_landing.play()
 
 ## Checks for complete lines and clears them, updating the score.
 ## Complete lines are removed and upper rows fall down.
