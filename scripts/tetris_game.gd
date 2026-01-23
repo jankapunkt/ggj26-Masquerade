@@ -178,7 +178,7 @@ func move_piece(dx: int, dy: int) -> bool:
 func move_down():
 	if not move_piece(0, 1):
 		lock_piece()
-		var lines = clear_lines()
+		clear_lines()
 		spawn_piece()
 		# Play landing sound after locking
 		# If lines were cleared, points sound will play after landing sound finishes
@@ -189,7 +189,7 @@ func hard_drop():
 	while move_piece(0, 1):
 		pass
 	lock_piece()
-	var lines = clear_lines()
+	clear_lines()
 	spawn_piece()
 	# Play landing sound after locking
 	# If lines were cleared, points sound will play after landing sound finishes
