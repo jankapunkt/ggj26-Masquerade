@@ -1,8 +1,8 @@
 [gd_scene load_steps=9 format=3 uid="uid://cr7yjlywgjqbs"]
 
-[ext_resource type="Script" path="res://scripts/tetris_game.gd" id="1_kn8dx"]
-[ext_resource type="Script" path="res://scenes/main.gd" id="1_thwcc"]
-[ext_resource type="Script" path="res://scripts/ui_controller.gd" id="2_t2s5h"]
+[ext_resource type="Script" uid="uid://devp8my1yt5m" path="res://scripts/tetris_game.gd" id="1_kn8dx"]
+[ext_resource type="Script" uid="uid://2no7m0dthgj6" path="res://scenes/main.gd" id="1_thwcc"]
+[ext_resource type="Script" uid="uid://bvga4auyp6qaq" path="res://scripts/ui_controller.gd" id="2_t2s5h"]
 [ext_resource type="AudioStream" uid="uid://mm3bue3lcuwc" path="res://sounds/line-cleared.mp3" id="3_a111i"]
 [ext_resource type="AudioStream" uid="uid://dyilhdjll64g" path="res://sounds/game-over-arcade.mp3" id="4_h8axc"]
 [ext_resource type="AudioStream" uid="uid://bpq75o2opeswi" path="res://sounds/click.mp3" id="5_nc34l"]
