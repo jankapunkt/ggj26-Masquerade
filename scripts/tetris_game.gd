@@ -48,6 +48,18 @@ const COLORS = {
 	"L": Color(1, 0.5, 0)     # Orange
 }
 
+# Rotation centers for each tetromino (in 4x4 grid coordinates)
+# Most pieces rotate around (1.5, 1.5), but some have different centers
+const ROTATION_CENTERS = {
+	"I": Vector2(1.5, 1.5),   # I-piece rotates around center
+	"O": Vector2(1.0, 1.0),   # O-piece center (though visually identical when rotated)
+	"T": Vector2(1.5, 1.5),   # T-piece center
+	"S": Vector2(1.5, 1.5),   # S-piece center
+	"Z": Vector2(1.5, 1.5),   # Z-piece center
+	"J": Vector2(1.5, 1.5),   # J-piece center
+	"L": Vector2(1.5, 1.5)    # L-piece center
+}
+
 # Game state variables
 var board = []
 var current_piece = null
@@ -223,6 +235,12 @@ func animate_rotation():
 	# Update target rotation (each rotation is 90 degrees = PI/2 radians)
 	target_rotation_angle += PI / 2.0
 	
+	# Normalize angle to prevent floating-point precision drift
+	# Keep angles within 0 to 2*PI range
+	target_rotation_angle = fmod(target_rotation_angle, 2.0 * PI)
+	if target_rotation_angle < 0:
+		target_rotation_angle += 2.0 * PI
+	
 	# Create new tween for smooth rotation animation
 	rotation_tween = create_tween()
 	rotation_tween.tween_property(self, "visual_rotation_angle", target_rotation_angle, 0.15)
@@ -332,12 +350,10 @@ func _draw():
 	
 	# Draw current piece with rotation animation
 	if current_piece != null:
-		# Calculate the center of the 4x4 piece grid for rotation
-		# The center is at 1.5, 1.5 in the 4x4 grid (between cells 1 and 2)
-		var piece_center_grid_x = 1.5
-		var piece_center_grid_y = 1.5
-		var piece_center_x = (piece_x + piece_center_grid_x) * CELL_SIZE
-		var piece_center_y = (piece_y + piece_center_grid_y) * CELL_SIZE
+		# Get the rotation center for the current piece type
+		var rotation_center = ROTATION_CENTERS.get(current_piece, Vector2(1.5, 1.5))
+		var piece_center_x = (piece_x + rotation_center.x) * CELL_SIZE
+		var piece_center_y = (piece_y + rotation_center.y) * CELL_SIZE
 		
 		for sy in range(current_shape.size()):
 			for sx in range(current_shape[sy].size()):
