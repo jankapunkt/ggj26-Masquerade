@@ -2,6 +2,7 @@ extends CharacterBody2D
 
 const SPEED = 200.0
 const VIEWPORT_WIDTH = 1080
+const PLAYER_RADIUS = 250
 
 func _ready():
 	queue_redraw()
@@ -16,11 +17,11 @@ func _physics_process(delta):
 		velocity.x = move_toward(velocity.x, 0, SPEED)
 	
 	# Keep player within bounds
-	position.x = clamp(position.x, 30, VIEWPORT_WIDTH - 30)
+	position.x = clamp(position.x, PLAYER_RADIUS + 10, VIEWPORT_WIDTH - (PLAYER_RADIUS + 10))
 	
 	move_and_slide()
 
 func _draw():
 	# Draw player as a circle
-	draw_circle(Vector2.ZERO, 25, Color(0.3, 0.8, 0.3, 1.0))
-	draw_circle(Vector2.ZERO, 23, Color(0.4, 0.9, 0.4, 1.0))
+	draw_circle(Vector2.ZERO, PLAYER_RADIUS, Color(0.3, 0.8, 0.3, 1.0))
+	draw_circle(Vector2.ZERO, PLAYER_RADIUS, Color(0.4, 0.9, 0.4, 1.0))
