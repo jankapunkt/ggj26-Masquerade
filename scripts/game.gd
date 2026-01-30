@@ -84,9 +84,9 @@ func check_collision_with_enemy(enemy):
 		return
 	
 	var distance = player.position.distance_to(enemy.position)
-	# Conservative collision threshold for large enemies
-	# Player radius (25) + minimum enemy radius (~459 for hexagon/triangle)
-	if distance < 484:
+	# Collision threshold to match enemy collision shape radius (649px for square corners)
+	# Player radius (25) + enemy collision radius (649)
+	if distance < 674:
 		trigger_game_over()
 
 func trigger_game_over():
