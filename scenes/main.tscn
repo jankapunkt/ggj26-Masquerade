@@ -23,12 +23,12 @@ size = Vector2(2160, 380)
 script = ExtResource("1_main")
 
 [node name="Sprite2D_A" type="Sprite2D" parent="."]
-position = Vector2(540, 960)
+position = Vector2(540, 0)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_tefeu")
 
 [node name="Sprite2D_B" type="Sprite2D" parent="."]
-position = Vector2(540, -960)
+position = Vector2(540, 1920)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_tefeu")
 
