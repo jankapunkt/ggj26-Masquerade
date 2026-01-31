@@ -20,9 +20,10 @@ var drag_strength = 800.0 # Apply a strong drag force (x units/sec)
 # Game state
 var game_over = false
 var scroll_offset = 0.0
+var enemies = [] # hold current enemies
 var current_enemy = null
 var time_since_last_spawn = 0.0
-var current_ability = 4 # Default ability 1
+var current_ability = 4 # Default ability 4 (white)
 
 # Ability system configuration
 # Maps ability number to: [color, [enemies it wins against]]
@@ -84,12 +85,12 @@ func _process(delta):
 	
 	# instead of event based collision we do continuous collision
 	# to apply drag forces
-	if current_enemy != null:
-		check_collision_with_enemy(current_enemy)
+	for enemy in enemies:
+		check_collision_with_enemy(enemy)
 	
 	# Handle enemy spawning
 	time_since_last_spawn += delta
-	if time_since_last_spawn >= spawn_interval and current_enemy == null:
+	if time_since_last_spawn >= spawn_interval:
 		spawn_enemy()
 		time_since_last_spawn = 0.0
 
@@ -137,16 +138,17 @@ func spawn_enemy():
 	enemy.connect("enemy_destroyed", Callable(self, "_on_enemy_destroyed"))
 	
 	add_child(enemy)
-	current_enemy = enemy
+	enemies.append(enemy)
 	
 	# Decrease spawn interval for next enemy
 	spawn_interval = max(min_spawn_interval, spawn_interval - spawn_decrease_rate)
 
-func _on_enemy_destroyed():
-	current_enemy = null
+func _on_enemy_destroyed(enemy):
+	if enemy in enemies:
+		enemies.erase(enemy)
 
 func check_collision_with_enemy(enemy):
-	if game_over:
+	if game_over or enemy == null:
 		return
 	
 	var distance = player.position.distance_to(enemy.position)
