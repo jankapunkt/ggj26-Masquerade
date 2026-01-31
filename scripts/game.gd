@@ -33,7 +33,6 @@ var time_since_last_spawn = 0.0
 var current_ability = 4 # Default ability 4 (white)
 var max_enemy_size = 150.0
 
-
 @onready var ability_switch_sound_effect = [
 	preload("res://assets/sounds/mask_switch_africa.wav"),
 	preload("res://assets/sounds/mask_switch_japan.wav"),
@@ -50,22 +49,23 @@ const BG_HEIGHT = 1920
 # Ability system configuration
 # Maps ability number to: [color, [enemies it wins against]]
 var ability_config = {
-	1: {"color": Color(1.0, 0.0, 0.0, 0.1), "name": "Red", "wins_against": [1], "shrink": 35},
-	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [2], "shrink": 35},
-	3: {"color": Color(0.0, 0.0, 1.0, 0.1), "name": "Blue", "wins_against": [3], "shrink": 35 },
+	1: {"color": Color(1.0, 0.0, 0.0, 0.1), "name": "Red", "wins_against": [1, 2, 3], "shrink": 35},
+	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [1, 2, 3], "shrink": 75 },
+	3: {"color": Color(0.0, 0.0, 1.0, 0.1), "name": "Blue", "wins_against": [1, 2, 3], "shrink": 35 },
 	4: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "White", "wins_against": [1,2, 3], "shrink": 10}
 }
 
 # Gauge system configuration
 const MAX_GAUGE = 100.0
 const GAUGE_DECREASE_PER_BULLET = 10.0
-const GAUGE_REFILL_RATE = 20.0  # Units per second when White ability is active
+const GAUGE_REFILL_RATE = 300.0  # Units per second when White ability is active
+var do_refill_gauge = false
 
 # Gauge tracking for abilities 1-3 (Red, Green, Blue)
 var ability_gauges = {
-	1: MAX_GAUGE,  # Red
-	2: MAX_GAUGE,  # Green
-	3: MAX_GAUGE   # Blue
+	1: 0,  # RedS
+	2: 0,  # Green
+	3: 0   # Blue
 }
 
 # Node references
@@ -134,6 +134,9 @@ func _process(delta):
 		update_ability_display()
 		update_player_color()
 	
+	# update player
+	player.current_type = current_ability
+	
 	# Update scroll effect
 	scroll_offset += SCROLL_SPEED * delta
 	queue_redraw()
@@ -144,10 +147,13 @@ func _process(delta):
 	# instead of event based collision we do continuous collision
 	# to apply drag forces
 	for enemy in enemies:
-		check_collision_with_enemy(enemy)
+		check_player_collision_with(enemy)
+		check_chaser_collision_with(enemy)
 	
 	# Handle gauge refill when White ability (4) is active
-	refill_gauges(current_ability, delta)
+	if do_refill_gauge:
+		refill_gauges(current_ability, delta)
+	do_refill_gauge = false
 	
 	# Handle enemy spawning
 	time_since_last_spawn += delta
@@ -232,10 +238,11 @@ func _on_enemy_destroyed(enemy):
 	if enemy in enemies:
 		enemies.erase(enemy)
  
-func check_collision_with_enemy(enemy):
+func check_player_collision_with(enemy):
 	if game_over or enemy == null:
 		return
 	
+	# player collision
 	var distance = player.position.distance_to(enemy.position)
 	# Conservative collision threshold for large enemies
 	# Player radius (125) + enemy radius (current_size / 2) + small buffer
@@ -248,6 +255,19 @@ func check_collision_with_enemy(enemy):
 		if direction_vector.length() > MIN_DRAG_DISTANCE:
 			var drag_direction = direction_vector.normalized()
 			player.drag_force = drag_direction * drag_strength
+
+func check_chaser_collision_with(enemy):
+	if game_over or enemy == null:
+		return
+	# chaser collision
+	var distance = chaser.position.distance_to(enemy.position)
+	# Conservative collision threshold for large enemies
+	# Player radius (125) + enemy radius (current_size / 2) + small buffer
+	var collision_threshold = 125 + (enemy.current_size / 2) + 10
+	if distance <= collision_threshold:
+		# if chaser "eats" an enemy, it grows and the enemy dies
+		enemy.shrink(10000)
+		chaser.position.y += 100
 
 func get_enemy_color(enemy_type: int) -> Color:
 	# Return the color for the given enemy type (enemies use same colors as abilities)
@@ -311,9 +331,10 @@ func does_player_win(_enemy_type: int) -> bool:
 
 func _on_bullet_hit_enemy(enemy):
 	if enemy and is_instance_valid(enemy):
-		var enemy_type = enemy.enemy_type 
+		var enemy_type = enemy.enemy_type
 		if enemy_type in ability_config[current_ability]["wins_against"]:
 			enemy.shrink(ability_config[current_ability]["shrink"])
+			do_refill_gauge = true
 
 #-------------------------------------------------------------------------------
 # Gauge System
@@ -321,9 +342,11 @@ func _on_bullet_hit_enemy(enemy):
 
 func refill_gauges(current, delta):
 	"""Refill all ability gauges when White ability is active"""
+	
 	for ability_id in ability_gauges.keys():
 		if ability_id != current:
-			ability_gauges[ability_id] = min(ability_gauges[ability_id] + GAUGE_REFILL_RATE * delta, MAX_GAUGE)
+			var refill_value = GAUGE_REFILL_RATE / ability_id
+			ability_gauges[ability_id] = min(ability_gauges[ability_id] + refill_value * delta, MAX_GAUGE)
 
 func can_shoot() -> bool:
 	"""Check if the current ability has enough gauge to shoot"""
