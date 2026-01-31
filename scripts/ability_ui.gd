@@ -47,13 +47,8 @@ func _draw():
 		if current_enemy_type > 0:
 			wins_against_enemy = current_enemy_type in parent_game_controller.ability_config[i]["wins_against"]
 		
-		# Draw the circle
-		if is_selected:
-			# Selected ability: draw larger with bright outline
-			draw_circle(circle_pos, CIRCLE_RADIUS + 8, Color.WHITE)
-			draw_circle(circle_pos, CIRCLE_RADIUS + 4, ability_color.lightened(0.3))
-			draw_circle(circle_pos, CIRCLE_RADIUS, ability_color)
-		elif wins_against_enemy:
+		# Draw the circle4
+		if wins_against_enemy:
 			# Winning ability: draw with pulsing glow effect
 			# Use modulo to prevent float precision issues in long-running games
 			var time_ms = Time.get_ticks_msec() % 6283  # 2π * 1000

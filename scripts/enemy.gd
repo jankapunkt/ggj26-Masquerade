@@ -13,9 +13,9 @@ var current_size = ENEMY_SIZE
 @onready var collision_shape = $CollisionShape2D
 
 func _ready():
-	# connect("body_entered", Callable(self, "_on_body_entered"))
+	current_size = randi_range(100, ENEMY_SIZE)
+	move_speed = remap(current_size, 100, ENEMY_SIZE, 300, 120)
 	add_to_group("enemy")
-	pass
 
 func _process(delta):
 	# Move enemy upward (creating illusion of player moving down)
