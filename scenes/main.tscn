@@ -34,7 +34,9 @@ position = Vector2(540, 1920)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_tefeu")
 
-[node name="Player" type="CharacterBody2D" parent="." unique_id=845132450 groups=["player"]]
+[node name="Player" type="CharacterBody2D" parent="." groups=["player"]]
+process_mode = 1
+
 script = ExtResource("2_player")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=632760406]
