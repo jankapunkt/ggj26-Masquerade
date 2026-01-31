@@ -7,7 +7,7 @@ const PLAYER_Y_POSITION = VIEWPORT_HEIGHT / 3  # Upper third
 
 @onready var japan: Sprite2D = $Player/japan
 @onready var mexican: Sprite2D = $Player/mexican
-@onready var anon: Sprite2D = $Player/anon
+@onready var anon: Sprite2D = $Player/jason
 @onready var african: Sprite2D = $Player/african
 
 
@@ -144,6 +144,10 @@ func _process(delta):
 		time_since_last_spawn = 0.0
 
 func update_background(delta):
+	if bg_a == null or bg_b == null: 
+		push_error("Background sprites not found")
+		return	
+
 	bg_a.position.y -= BG_SCROLL_SPEED * delta
 	bg_b.position.y -= BG_SCROLL_SPEED * delta
 

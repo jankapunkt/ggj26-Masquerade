@@ -15,10 +15,16 @@ var current_color = Color(0.4, 0.9, 0.4, 1.0)
 # Drag force from enemies
 var drag_force = Vector2.ZERO
 
-@onready var shoot_sounds = [
-	preload("res://assets/sounds/Pew_1.wav"),
-	preload("res://assets/sounds/Pew_2.wav"),
-	preload("res://assets/sounds/Pew_3.wav")
+@onready var shoot_sounds_pistole = [
+	preload("res://assets/sounds/weapons/pistole/Pew_1.wav"),
+	preload("res://assets/sounds/weapons/pistole/Pew_2.wav"),
+	preload("res://assets/sounds/weapons/pistole/Pew_3.wav")
+]
+
+@onready var shoot_sounds_shotgun = [
+	preload("res://assets/sounds/weapons/shotgun/shotgun_pew1.wav"),
+	preload("res://assets/sounds/weapons/shotgun/shotgun_pew2.wav"),
+	preload("res://assets/sounds/weapons/shotgun/shotgun_pew3.wav")
 ]
 
 # Bullet scene reference
@@ -77,13 +83,15 @@ func shoot_shotgun():
 		
 		bullet.velocity = direction * bullet_speed
 		get_parent().add_child(bullet)
+	$ShootSound.stream = shoot_sounds_shotgun.pick_random()
+	$ShootSound.play()
 
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
 	bullet.position = position
 	bullet.connect("bullet_hit_enemy", Callable(get_parent(), "_on_bullet_hit_enemy"))
 	get_parent().add_child(bullet)
-	$ShootSound.stream = shoot_sounds.pick_random()
+	$ShootSound.stream = shoot_sounds_pistole.pick_random()
 	$ShootSound.play()
 
 func _draw():
