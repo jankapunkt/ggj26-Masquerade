@@ -48,6 +48,7 @@ func _draw():
 		
 		# Determine if this ability is selected or wins against current enemy
 		var is_selected = (i == current_ability)
+		var alpha = 0.9 if is_selected else 0.1
 		var wins_against_enemy = false
 		
 		if current_enemy_type > 0:
@@ -76,8 +77,11 @@ func _draw():
 			# Draw filled gauge (based on percentage)
 			if gauge_percentage > 0:
 				var gauge_angle = TAU * gauge_percentage
-				var gauge_color = Color(0.0, 1.0, 0.0, 0.9) if gauge_percentage > 0.3 else Color(1.0, 0.5, 0.0, 0.9)
+				var gauge_color = Color(0.0, 1.0, 0.0, alpha) if gauge_percentage > 0.3 else Color(1.0, 0.5, 0.0, alpha)
 				draw_arc(circle_pos, CIRCLE_RADIUS + 4, 0, gauge_angle, 32, gauge_color, 6.0)
+		else:
+			# draw full gauge
+			draw_arc(circle_pos, CIRCLE_RADIUS + 4, 0,  TAU * gauge_percentage, 32, Color(0.0, 1.0, 0.0, alpha), 6.0)
 		
 		# Note: Ability numbers are conveyed through position and color
 		# Text drawing is omitted to keep the UI minimal and avoid font dependencies
