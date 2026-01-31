@@ -97,6 +97,7 @@ func _process(delta):
 		current_ability = current_ability - 1
 		if current_ability < 1:
 			current_ability = 4
+		playAbilitySwitchSound()
 		update_ability_display()
 		update_player_color()
 		
@@ -104,6 +105,7 @@ func _process(delta):
 		current_ability = current_ability + 1
 		if current_ability > 4:
 			current_ability = 1
+		playAbilitySwitchSound()
 		update_ability_display()
 		update_player_color()
 	
