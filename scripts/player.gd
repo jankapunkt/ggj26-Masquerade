@@ -8,6 +8,10 @@ const RADIUS = 125
 # Current player color (updated by game controller based on ability)
 var current_color = Color(0.4, 0.9, 0.4, 1.0)
 
+@export var pellet_count := 3
+@export var spread_angle := 30.0  # degrees
+@export var bullet_speed := 600.0
+
 # Drag force from enemies
 var drag_force = Vector2.ZERO
 
@@ -26,7 +30,7 @@ func _ready():
 func _physics_process(delta):
 	# Handle shooting
 	if Input.is_action_just_pressed("shoot"):
-		shoot_bullet()
+		shoot_shotgun()
 	
 	# Get input direction for horizontal movement
 	var direction_x = Input.get_axis("move_left", "move_right")
@@ -55,6 +59,19 @@ func _physics_process(delta):
 	
 	# Reset drag force each frame (will be re-applied by colliding enemies)
 	drag_force = Vector2.ZERO
+	
+func shoot_shotgun(): 
+	for i in pellet_count:
+		var bullet = bullet_scene.instantiate()
+		bullet.connect("bullet_hit_enemy", Callable(get_parent(), "_on_bullet_hit_enemy"))
+		bullet.position = position
+		
+		# Random spread
+		var angle_offset = deg_to_rad(randf_range(-spread_angle/2, spread_angle/2))
+		var direction = Vector2.DOWN.rotated(angle_offset)  # base is DOWN
+		
+		bullet.velocity = direction * bullet_speed
+		get_parent().add_child(bullet)
 
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
