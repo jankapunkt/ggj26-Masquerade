@@ -13,6 +13,9 @@ var spawn_interval = 3.0  # Start with 3 seconds
 var min_spawn_interval = 0.5  # Minimum 0.5 seconds
 var spawn_decrease_rate = 0.1  # Decrease by 0.1 seconds each spawn
 
+# Drag force configuration
+const MIN_DRAG_DISTANCE = 0.1  # Minimum distance threshold to prevent division by zero when normalizing
+
 # Game state
 var game_over = false
 var scroll_offset = 0.0
@@ -91,6 +94,17 @@ func update_chaser():
 	# chaser.position = Vector2(player.position.x, player.position.y - 100)
 	chaser.queue_redraw()
 
+func check_collision_with_chaser(chaser):
+	if game_over:
+		return
+	var distance = player.position.distance_to(chaser.position)
+	print_debug(distance)
+	# Conservative collision threshold for large enemies
+	# Player radius (125) + enemy radius (~459) = (rounded up) 585
+	if distance <= 585:
+		# Player loses - game over
+		trigger_game_over()
+	
 #-------------------------------------------------------------------------------
 # Enemies
 #-------------------------------------------------------------------------------

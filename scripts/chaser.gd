@@ -1,6 +1,7 @@
-extends Node2D
+extends Area2D
 
 func _ready():
+	body_entered.connect(_on_body_entered)
 	queue_redraw()
 
 func _draw():
@@ -22,3 +23,8 @@ func _draw():
 	for i in range(num_points):
 		var next_i = (i + 1) % num_points
 		draw_line(points[i], points[next_i], Color(1.0, 0.3, 0.3, 1.0), 2.0)
+
+func _on_body_entered(body):
+	if body.is_in_group("player"):
+		# Notify game controller of collision with chaser
+		get_parent().check_collision_with_chaser(self)
