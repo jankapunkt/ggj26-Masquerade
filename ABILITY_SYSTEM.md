@@ -9,10 +9,22 @@ This document describes the updated ability system implemented for the GGJ26 ver
 Each of the 5 abilities corresponds to a specific color:
 
 1. **Ability 1 - Violet** (RGB: 0.58, 0.0, 0.83)
-2. **Ability 2 - Yellow** (RGB: 1.0, 1.0, 0.0)
+2. **Ability 2 - Yellow** (RGB: 1.0, 1.0, 0.0) - **Rapid Fire** capability
 3. **Ability 3 - Red** (RGB: 1.0, 0.0, 0.0)
 4. **Ability 4 - Green** (RGB: 0.0, 1.0, 0.0)
 5. **Ability 5 - Blue** (RGB: 0.0, 0.0, 1.0)
+
+### Shooting Mechanics
+
+#### Ability 2 - Rapid Fire
+- **Trigger**: Hold SPACE key to shoot continuously
+- **Fire Rate**: 10 shots per second (configurable via `ability_2_fire_rate` export variable)
+- **Throttling**: Uses delta time for consistent fire rate across different frame rates
+- **Control**: Release SPACE to stop shooting
+
+#### Other Abilities
+- **Trigger**: Press SPACE once to shoot
+- **Behavior**: Single shot per key press
 
 ### Win Conditions
 Each ability wins against 2 specific enemy types:
@@ -82,6 +94,13 @@ When the player collides with an enemy without the winning ability:
 2. **scripts/player.gd**
    - Added `current_color` variable
    - Modified `_draw()` to use dynamic color based on ability
+   - **NEW**: Added `ability_2_fire_rate` export variable (default: 10 shots/second)
+   - **NEW**: Added `time_since_last_shot` timer for throttling
+   - **NEW**: Implemented rapid fire logic in `_physics_process()`:
+     - For Ability 2: Uses `Input.is_action_pressed()` to detect held space bar
+     - Calculates fire interval based on fire rate and delta time
+     - Ensures consistent fire rate across different frame rates
+     - For other abilities: Uses `Input.is_action_just_pressed()` for single shots
 
 3. **scripts/enemy.gd**
    - Updated `_draw()` to render all enemy types as circles
@@ -92,8 +111,9 @@ When the player collides with an enemy without the winning ability:
 ## Controls
 
 - **A/D or Arrow Keys**: Move left/right
+- **SPACE**: Shoot (Single shot for most abilities, hold for rapid fire with Ability 2)
 - **1**: Switch to Ability 1 (Violet)
-- **2**: Switch to Ability 2 (Yellow)
+- **2**: Switch to Ability 2 (Yellow) - Rapid Fire mode
 - **3**: Switch to Ability 3 (Red)
 - **4**: Switch to Ability 4 (Green)
 - **5**: Switch to Ability 5 (Blue)

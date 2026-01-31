@@ -12,6 +12,10 @@ var current_type = 4
 @export var spread_angle := 30.0  # degrees
 @export var bullet_speed := 600.0
 
+# Rapid fire settings for Ability 2
+@export var ability_2_fire_rate := 10.0  # shots per second
+var time_since_last_shot := 0.0
+
 # Drag force from enemies
 var drag_force = Vector2.ZERO
 
@@ -34,8 +38,26 @@ func _ready():
 	queue_redraw()
 
 func _physics_process(delta):
+	# Update time since last shot (for throttling)
+	time_since_last_shot += delta
+	
 	# Handle shooting
-	if Input.is_action_just_pressed("shoot"):
+	var shoot_pressed = Input.is_action_pressed("shoot")
+	var can_shoot_now = false
+	
+	# For Ability 2 (Green), allow rapid fire by holding space
+	if current_type == 2:
+		# Calculate fire interval based on fire rate
+		var fire_interval = 1.0 / ability_2_fire_rate
+		# Check if enough time has passed since last shot
+		if shoot_pressed and time_since_last_shot >= fire_interval:
+			can_shoot_now = true
+	else:
+		# For other abilities, use single shot (just pressed)
+		if Input.is_action_just_pressed("shoot"):
+			can_shoot_now = true
+	
+	if can_shoot_now:
 		# Check if we can shoot (gauge available)
 		if get_parent().has_method("can_shoot") and get_parent().can_shoot():
 			match current_type:
@@ -47,6 +69,8 @@ func _physics_process(delta):
 			# Consume gauge after shooting
 			if get_parent().has_method("consume_gauge"):
 				get_parent().consume_gauge()
+			# Reset the timer after shooting
+			time_since_last_shot = 0.0
 	
 	# Get input direction for horizontal movement
 	var direction_x = Input.get_axis("move_left", "move_right")
