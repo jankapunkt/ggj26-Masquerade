@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://br7nag8x4a8ki"]
+[gd_scene load_steps=9 format=3 uid="uid://br7nag8x4a8ki"]
 
 [ext_resource type="Script" uid="uid://d3m0vwiiar26a" path="res://scripts/game.gd" id="1_main"]
 [ext_resource type="Script" uid="uid://77l6sve7drrm" path="res://scripts/player.gd" id="2_player"]
 [ext_resource type="Script" uid="uid://d4i8t72v8v56x" path="res://scripts/chaser.gd" id="3_chaser"]
 [ext_resource type="AudioStream" uid="uid://drtc84d7wcx5l" path="res://assets/sounds/Pew_1.wav" id="3_tbgi4"]
 [ext_resource type="Script" uid="uid://fq6atjqhrsu0" path="res://scripts/ability_ui.gd" id="4_ability_ui"]
+[ext_resource type="AudioStream" uid="uid://cf631fc3mu73c" path="res://assets/sounds/mask_switch_africa.wav" id="6_tefeu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sugp2"]
 radius = 125.0
@@ -106,3 +107,6 @@ Space: Shoot"
 
 [node name="AbilityUI" type="Node2D" parent="CanvasLayer"]
 script = ExtResource("4_ability_ui")
+
+[node name="AbilitySwitchSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("6_tefeu")
