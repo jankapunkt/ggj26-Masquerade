@@ -6,13 +6,12 @@ This document describes the updated ability system implemented for the GGJ26 ver
 ## Ability Mechanics
 
 ### Ability Color Mapping
-Each of the 5 abilities corresponds to a specific color:
+Each ability corresponds to a specific color:
 
-1. **Ability 1 - Violet** (RGB: 0.58, 0.0, 0.83)
-2. **Ability 2 - Yellow** (RGB: 1.0, 1.0, 0.0) - **Rapid Fire** capability
-3. **Ability 3 - Red** (RGB: 1.0, 0.0, 0.0)
-4. **Ability 4 - Green** (RGB: 0.0, 1.0, 0.0)
-5. **Ability 5 - Blue** (RGB: 0.0, 0.0, 1.0)
+1. **Ability 1 - Red** (RGB: 1.0, 0.0, 0.0, 0.1)
+2. **Ability 2 - Green** (RGB: 0.0, 1.0, 0.0, 0.1) - **Rapid Fire** capability
+3. **Ability 3 - Blue** (RGB: 0.0, 0.0, 1.0, 0.1)
+4. **Ability 4 - White** (RGB: 1.0, 1.0, 1.0, 0.1)
 
 ### Shooting Mechanics
 
@@ -112,11 +111,10 @@ When the player collides with an enemy without the winning ability:
 
 - **A/D or Arrow Keys**: Move left/right
 - **SPACE**: Shoot (Single shot for most abilities, hold for rapid fire with Ability 2)
-- **1**: Switch to Ability 1 (Violet)
-- **2**: Switch to Ability 2 (Yellow) - Rapid Fire mode
-- **3**: Switch to Ability 3 (Red)
-- **4**: Switch to Ability 4 (Green)
-- **5**: Switch to Ability 5 (Blue)
+- **1**: Switch to Ability 1 (Red)
+- **2**: Switch to Ability 2 (Green) - Rapid Fire mode
+- **3**: Switch to Ability 3 (Blue)
+- **4**: Switch to Ability 4 (White)
 - **Enter**: Restart game (when game over)
 
 ## Strategic Gameplay
