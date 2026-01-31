@@ -29,7 +29,7 @@ func _draw():
 	var current_ability = parent_game_controller.current_ability
 	var current_enemy = parent_game_controller.current_enemy
 	var current_enemy_type = 0
-	if current_enemy != null and is_instance_valid(current_enemy):
+	if current_enemy != null and is_instance_valid(current_enemy) and "enemy_type" in current_enemy:
 		current_enemy_type = current_enemy.enemy_type
 	
 	# Draw each ability circle
@@ -55,7 +55,9 @@ func _draw():
 			draw_circle(circle_pos, CIRCLE_RADIUS, ability_color)
 		elif wins_against_enemy:
 			# Winning ability: draw with pulsing glow effect
-			var pulse_scale = 1.0 + sin(Time.get_ticks_msec() * PULSE_SPEED) * PULSE_INTENSITY
+			# Use modulo to prevent float precision issues in long-running games
+			var time_ms = Time.get_ticks_msec() % 6283  # 2π * 1000
+			var pulse_scale = 1.0 + sin(time_ms * PULSE_SPEED) * PULSE_INTENSITY
 			draw_circle(circle_pos, CIRCLE_RADIUS * pulse_scale, ability_color.lightened(0.5))
 			draw_circle(circle_pos, CIRCLE_RADIUS, ability_color)
 			# Add extra bright outline to make it clear
@@ -80,6 +82,12 @@ func _process(_delta):
 		last_ability = current_ability
 		last_enemy = current_enemy
 		queue_redraw()
-	# Also redraw continuously when enemy is present for pulsing animation
-	elif current_enemy != null:
-		queue_redraw()
+	# Also redraw when enemy is present and there are winning abilities to animate
+	elif current_enemy != null and is_instance_valid(current_enemy):
+		# Check if any ability wins against current enemy (has pulsing animation)
+		var enemy_type = current_enemy.enemy_type if "enemy_type" in current_enemy else 0
+		if enemy_type > 0:
+			for i in range(1, 6):
+				if i != current_ability and enemy_type in parent_game_controller.ability_config[i]["wins_against"]:
+					queue_redraw()
+					break
