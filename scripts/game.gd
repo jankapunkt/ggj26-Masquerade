@@ -11,7 +11,9 @@ const SCROLL_SPEED = 100.0  # Pixels per second
 # Enemy spawn configuration
 var spawn_interval = 3.0  # Start with 3 seconds
 var min_spawn_interval = 0.5  # Minimum 0.5 seconds
+var max_spawn_interval = 5.0  # Maximum 5 seconds
 var spawn_decrease_rate = 0.1  # Decrease by 0.1 seconds each spawn
+var spawn_interval_variation = 1.0  # Random variation range (+/- seconds)
 
 # Drag force configuration
 const MIN_DRAG_DISTANCE = 0.1  # Minimum distance threshold to prevent division by zero when normalizing
@@ -20,7 +22,7 @@ var drag_strength = 800.0 # Apply a strong drag force (x units/sec)
 # Game state
 var game_over = false
 var scroll_offset = 0.0
-var current_enemy = null
+var enemies = []  # Array to hold multiple enemies
 var time_since_last_spawn = 0.0
 var current_ability = 4 # Default ability 1
 
@@ -68,14 +70,14 @@ func _process(delta):
 	# Update chaser to follow player
 	update_chaser()
 	
-	# instead of event based collision we do continuous collision
-	# to apply drag forces
-	if current_enemy != null:
-		check_collision_with_enemy(current_enemy)
+	# Check collision with all enemies
+	for enemy in enemies:
+		if is_instance_valid(enemy):
+			check_collision_with_enemy(enemy)
 	
 	# Handle enemy spawning
 	time_since_last_spawn += delta
-	if time_since_last_spawn >= spawn_interval and current_enemy == null:
+	if time_since_last_spawn >= spawn_interval:
 		spawn_enemy()
 		time_since_last_spawn = 0.0
 
@@ -113,23 +115,40 @@ func check_collision_with_chaser(chaser):
 #-------------------------------------------------------------------------------
 
 func spawn_enemy():
-	# Random enemy type (1-5)
+	# Random enemy type (1-3)
 	var enemy_type = randi() % 3 + 1
 	var enemy = preload("res://scenes/enemy.tscn").instantiate()
 	
-	# Spawn centered horizontally at bottom of screen
-	enemy.position = Vector2(VIEWPORT_WIDTH / 2, VIEWPORT_HEIGHT + 50)
+	# Randomize initial enemy size to determine spawn constraints
+	var initial_size = randi_range(100, enemy.ENEMY_SIZE)
+	var enemy_radius = initial_size / 2
+	
+	# Calculate safe horizontal spawn range to ensure enemy fits within bounds
+	# Account for enemy radius on both sides
+	var min_x = enemy_radius
+	var max_x = VIEWPORT_WIDTH - enemy_radius
+	
+	# Random horizontal position within safe bounds
+	var spawn_x = randf_range(min_x, max_x)
+	
+	# Spawn at bottom of screen, outside visible area
+	enemy.position = Vector2(spawn_x, VIEWPORT_HEIGHT + enemy_radius + 50)
 	enemy.enemy_type = enemy_type
-	enemy.connect("enemy_destroyed", Callable(self, "_on_enemy_destroyed"))
+	enemy.current_size = initial_size  # Set size before ready() is called
+	enemy.connect("enemy_destroyed", Callable(self, "_on_enemy_destroyed").bind(enemy))
 	
 	add_child(enemy)
-	current_enemy = enemy
+	enemies.append(enemy)
 	
-	# Decrease spawn interval for next enemy
-	spawn_interval = max(min_spawn_interval, spawn_interval - spawn_decrease_rate)
+	# Calculate next spawn interval with variation
+	var base_interval = max(min_spawn_interval, spawn_interval - spawn_decrease_rate)
+	var variation = randf_range(-spawn_interval_variation, spawn_interval_variation)
+	spawn_interval = clamp(base_interval + variation, min_spawn_interval, max_spawn_interval)
 
-func _on_enemy_destroyed():
-	current_enemy = null
+func _on_enemy_destroyed(enemy):
+	# Remove enemy from the array
+	if enemy in enemies:
+		enemies.erase(enemy)
 
 func check_collision_with_enemy(enemy):
 	if game_over:

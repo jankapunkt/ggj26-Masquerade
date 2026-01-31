@@ -13,7 +13,9 @@ var current_size = ENEMY_SIZE
 @onready var collision_shape = $CollisionShape2D
 
 func _ready():
-	current_size = randi_range(100, ENEMY_SIZE)
+	# Only set random size if not already set by spawner
+	if current_size == ENEMY_SIZE:
+		current_size = randi_range(100, ENEMY_SIZE)
 	move_speed = remap(current_size, 100, ENEMY_SIZE, 300, 120)
 	add_to_group("enemy")
 
