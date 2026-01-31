@@ -275,9 +275,9 @@ func can_shoot() -> bool:
 	# White ability (4) has no gauge limitation
 	if current_ability == 4:
 		return true
-	# Abilities 1-3 require gauge
+	# Abilities 1-3 require sufficient gauge
 	if current_ability in ability_gauges:
-		return ability_gauges[current_ability] > 0
+		return ability_gauges[current_ability] >= GAUGE_DECREASE_PER_BULLET
 	return false
 
 func consume_gauge():

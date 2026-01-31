@@ -12,6 +12,7 @@ const PULSE_INTENSITY = 0.2  # Scale factor for pulse animation
 var parent_game_controller = null
 var last_ability = -1
 var last_enemy = null
+var last_gauge_values = {}  # Track gauge values to detect changes
 
 func _ready():
 	# Get reference to game controller (grandparent node: CanvasLayer -> Game)
@@ -68,12 +69,12 @@ func _draw():
 			draw_circle(circle_pos, CIRCLE_RADIUS - 2, ability_color.darkened(0.6))
 		
 		# Draw gauge indicator as a filled arc at the bottom of the circle
-		if gauge_percentage < 1.0:
+		if gauge_percentage < 0.95:  # Only show gauge indicator when meaningfully depleted
 			# Draw empty gauge background (red)
 			draw_arc(circle_pos, CIRCLE_RADIUS + 4, 0, TAU, 32, Color(0.5, 0.0, 0.0, 0.7), 6.0)
 		
 		# Draw filled gauge (based on percentage)
-		if gauge_percentage > 0:
+		if gauge_percentage > 0 and gauge_percentage < 1.0:
 			var gauge_angle = TAU * gauge_percentage
 			var gauge_color = Color(0.0, 1.0, 0.0, 0.9) if gauge_percentage > 0.3 else Color(1.0, 0.5, 0.0, 0.9)
 			draw_arc(circle_pos, CIRCLE_RADIUS + 4, 0, gauge_angle, 32, gauge_color, 6.0)
@@ -85,5 +86,29 @@ func _process(_delta):
 	if parent_game_controller == null:
 		return
 	
-	# Always redraw to show gauge updates
-	queue_redraw()
+	# Check if state has changed (ability switch, enemy spawn/destroy, or gauge change)
+	var current_ability = parent_game_controller.current_ability
+	var current_enemy = parent_game_controller.current_enemy
+	var gauges_changed = false
+	
+	# Check if gauges have changed
+	if parent_game_controller.has_method("get_gauge_percentage"):
+		for i in range(1, 4):
+			var current_gauge = parent_game_controller.get_gauge_percentage(i)
+			if not last_gauge_values.has(i) or abs(last_gauge_values[i] - current_gauge) > 0.01:
+				last_gauge_values[i] = current_gauge
+				gauges_changed = true
+	
+	if current_ability != last_ability or current_enemy != last_enemy or gauges_changed:
+		last_ability = current_ability
+		last_enemy = current_enemy
+		queue_redraw()
+	# Also redraw when enemy is present and there are winning abilities to animate
+	elif current_enemy != null and is_instance_valid(current_enemy):
+		# Check if any ability wins against current enemy (has pulsing animation)
+		var enemy_type = current_enemy.enemy_type if "enemy_type" in current_enemy else 0
+		if enemy_type > 0:
+			for i in range(1, 4):
+				if i != current_ability and enemy_type in parent_game_controller.ability_config[i]["wins_against"]:
+					queue_redraw()
+					break
