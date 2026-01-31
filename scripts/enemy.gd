@@ -15,6 +15,13 @@ func _process(delta):
 	# Move enemy upward (creating illusion of player moving down)
 	position.y -= move_speed * delta
 	
+	# Move enemy towards player's horizontal position
+	var player = get_parent().get_node_or_null("Player")
+	if player:
+		var direction_to_player = sign(player.position.x - position.x)
+		var horizontal_speed = move_speed * 0.5  # Move at 50% of vertical speed horizontally
+		position.x += direction_to_player * horizontal_speed * delta
+	
 	# Check if enemy has moved off screen (top)
 	if position.y < -100:
 		emit_signal("enemy_destroyed")
