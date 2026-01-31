@@ -32,7 +32,6 @@ var time_since_last_spawn = 0.0
 var current_ability = 4 # Default ability 4 (white)
 var max_enemy_size = 150.0
 
-
 @onready var ability_switch_sound_effect = [
 	preload("res://assets/sounds/mask_switch_africa.wav"),
 	preload("res://assets/sounds/mask_switch_japan.wav"),
@@ -50,7 +49,7 @@ const BG_HEIGHT = 1920
 # Maps ability number to: [color, [enemies it wins against]]
 var ability_config = {
 	1: {"color": Color(1.0, 0.0, 0.0, 0.1), "name": "Red", "wins_against": [1, 2, 3], "shrink": 35},
-	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [1, 2, 3], "shrink": 35},
+	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [1, 2, 3], "shrink": 75 },
 	3: {"color": Color(0.0, 0.0, 1.0, 0.1), "name": "Blue", "wins_against": [1, 2, 3], "shrink": 35 },
 	4: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "White", "wins_against": [1,2, 3], "shrink": 10}
 }
@@ -135,7 +134,8 @@ func _process(delta):
 	# instead of event based collision we do continuous collision
 	# to apply drag forces
 	for enemy in enemies:
-		check_collision_with_enemy(enemy)
+		check_player_collision_with(enemy)
+		check_chaser_collision_with(enemy)
 	
 	# Handle gauge refill when White ability (4) is active
 	if do_refill_gauge:
@@ -223,10 +223,11 @@ func _on_enemy_destroyed(enemy):
 	if enemy in enemies:
 		enemies.erase(enemy)
  
-func check_collision_with_enemy(enemy):
+func check_player_collision_with(enemy):
 	if game_over or enemy == null:
 		return
 	
+	# player collision
 	var distance = player.position.distance_to(enemy.position)
 	# Conservative collision threshold for large enemies
 	# Player radius (125) + enemy radius (current_size / 2) + small buffer
@@ -239,6 +240,19 @@ func check_collision_with_enemy(enemy):
 		if direction_vector.length() > MIN_DRAG_DISTANCE:
 			var drag_direction = direction_vector.normalized()
 			player.drag_force = drag_direction * drag_strength
+
+func check_chaser_collision_with(enemy):
+	if game_over or enemy == null:
+		return
+	# chaser collision
+	var distance = chaser.position.distance_to(enemy.position)
+	# Conservative collision threshold for large enemies
+	# Player radius (125) + enemy radius (current_size / 2) + small buffer
+	var collision_threshold = 125 + (enemy.current_size / 2) + 10
+	if distance <= collision_threshold:
+		# if chaser "eats" an enemy, it grows and the enemy dies
+		enemy.shrink(10000)
+		chaser.position.y += 100
 
 func get_enemy_color(enemy_type: int) -> Color:
 	# Return the color for the given enemy type (enemies use same colors as abilities)
