@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-const SPEED = 400.0
+const SPEED = 1000.0
 const VIEWPORT_WIDTH = 1080
 const VIEWPORT_HEIGHT = 1920
 const RADIUS = 125

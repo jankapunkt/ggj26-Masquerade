@@ -33,7 +33,7 @@ func _draw():
 		current_enemy_type = current_enemy.enemy_type
 	
 	# Draw each ability circle
-	for i in range(1, 6):
+	for i in range(1, 4):
 		var x_pos = start_x + (i - 1) * CIRCLE_SPACING
 		var circle_pos = Vector2(x_pos, Y_POSITION)
 		
@@ -87,7 +87,7 @@ func _process(_delta):
 		# Check if any ability wins against current enemy (has pulsing animation)
 		var enemy_type = current_enemy.enemy_type if "enemy_type" in current_enemy else 0
 		if enemy_type > 0:
-			for i in range(1, 6):
+			for i in range(1, 4):
 				if i != current_ability and enemy_type in parent_game_controller.ability_config[i]["wins_against"]:
 					queue_redraw()
 					break

@@ -22,17 +22,15 @@ var game_over = false
 var scroll_offset = 0.0
 var current_enemy = null
 var time_since_last_spawn = 0.0
-var current_ability = 1  # Default ability 1
+var current_ability = 4 # Default ability 1
 
 # Ability system configuration
 # Maps ability number to: [color, [enemies it wins against]]
 var ability_config = {
-	0: {"color": Color(1.0, 1.0, 1.0, 0.7), "name": "White", "wins_against": []},
-	1: {"color": Color(0.58, 0.0, 0.83, 0.7), "name": "Violet", "wins_against": [2, 4]},  # Violet wins 2,4
-	2: {"color": Color(1.0, 1.0, 0.0, 0.7), "name": "Yellow", "wins_against": [3, 5]},    # Yellow wins 3,5
-	3: {"color": Color(1.0, 0.0, 0.0, 0.7), "name": "Red", "wins_against": [4, 1]},       # Red wins 4,1
-	4: {"color": Color(0.0, 1.0, 0.0, 0.7), "name": "Green", "wins_against": [5, 2]},     # Green wins 5,2
-	5: {"color": Color(0.0, 0.0, 1.0, 0.7), "name": "Blue", "wins_against": [1, 3]},       # Blue wins 1,3
+	1: {"color": Color(1.0, 0.0, 0.0, 0.7), "name": "Red", "wins_against": [1], "shrink": 25},
+	2: {"color": Color(0.0, 1.0, 0.0, 0.7), "name": "Green", "wins_against": [2], "shrink": 25},
+	3: {"color": Color(0.0, 0.0, 1.0, 0.7), "name": "Blue", "wins_against": [3], "shrink": 25 },
+	4: {"color": Color(1.0, 1.0, 1.0, 0.7), "name": "White", "wins_against": [1,2, 3], "shrink": 10}
 }
 
 # Node references
@@ -116,7 +114,7 @@ func check_collision_with_chaser(chaser):
 
 func spawn_enemy():
 	# Random enemy type (1-5)
-	var enemy_type = randi() % 5 + 1
+	var enemy_type = randi() % 3 + 1
 	var enemy = preload("res://scenes/enemy.tscn").instantiate()
 	
 	# Spawn centered horizontally at bottom of screen
@@ -188,7 +186,7 @@ func _on_bullet_hit_enemy(enemy):
 	if enemy and is_instance_valid(enemy):
 		var enemy_type = enemy.enemy_type 
 		if enemy_type in ability_config[current_ability]["wins_against"]:
-			enemy.shrink()
+			enemy.shrink(ability_config[current_ability]["shrink"])
 
 func _draw():
 	# Draw scrolling background pattern

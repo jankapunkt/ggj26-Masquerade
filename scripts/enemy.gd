@@ -7,7 +7,6 @@ var move_speed = 120.0
 
 # Enemy size configuration - 85% of screen width (1080 * 0.85 = 918)
 const ENEMY_SIZE = 918.0
-const SHRINK_RATE = 20.0  # Pixels to shrink per bullet hit
 
 var current_size = ENEMY_SIZE
 
@@ -52,11 +51,9 @@ func get_enemy_color() -> Color:
 		return get_parent().get_enemy_color(enemy_type)
 	# Fallback colors
 	match enemy_type:
-		1: return Color(0.58, 0.0, 0.83, 0.7)   # Violet
-		2: return Color(1.0, 1.0, 0.0, 0.7)     # Yellow
-		3: return Color(1.0, 0.0, 0.0, 0.7)     # Red
-		4: return Color(0.0, 1.0, 0.0, 0.7)     # Green
-		5: return Color(0.0, 0.0, 1.0, 0.7)     # Blue
+		1: return Color(1.0, 0.0, 0.0, 0.7)     # Red
+		2: return Color(0.0, 1.0, 0.0, 0.7)     # Green
+		3: return Color(0.0, 0.0, 1.0, 0.7)     # Blue
 		_: return Color.WHITE
 
 func draw_circle_enemy(base_color: Color):
@@ -64,8 +61,8 @@ func draw_circle_enemy(base_color: Color):
 	draw_circle(Vector2.ZERO, radius, base_color)
 	draw_arc(Vector2.ZERO, radius, 0, TAU, 32, base_color.lightened(0.2), 2.0)
 
-func shrink():
-	current_size -= SHRINK_RATE
+func shrink(rate):
+	current_size -= rate
 	if current_size <= 0:
 		emit_signal("enemy_destroyed")
 		queue_free()
