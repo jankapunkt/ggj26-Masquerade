@@ -4,9 +4,15 @@ extends Node2D
 const CIRCLE_RADIUS = 40.0
 const CIRCLE_SPACING = 120.0
 const Y_POSITION = 1820.0  # Near bottom of viewport (1920 - 100)
-const VIEWPORT_WIDTH = 1080
+const VIEWPORT_WIDTH = 1350
 const PULSE_SPEED = 0.005  # Animation speed for pulsing effect
 const PULSE_INTENSITY = 0.2  # Scale factor for pulse animation
+
+@onready var ability_icons := {
+	1: $african,
+	2: $mexican,
+	3: $japan
+}
 
 # References to game controller (grandparent node through CanvasLayer)
 var parent_game_controller = null
@@ -37,6 +43,14 @@ func _draw():
 	for i in range(1, 4):
 		var x_pos = start_x + (i - 1) * CIRCLE_SPACING
 		var circle_pos = Vector2(x_pos, Y_POSITION)
+		
+		var icon: Sprite2D = ability_icons[i]
+		icon.position = circle_pos
+		icon.z_index = 10 
+		var target_size = CIRCLE_RADIUS * 1.4
+		var tex_size = icon.texture.get_size().x
+		icon.scale = Vector2.ONE * (target_size / tex_size)
+
 		
 		# Get ability color
 		var ability_color = parent_game_controller.ability_config[i]["color"]

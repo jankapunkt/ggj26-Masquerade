@@ -147,7 +147,24 @@ Space: Shoot"
 [node name="AbilityUI" type="Node2D" parent="CanvasLayer" unique_id=1100550745]
 script = ExtResource("4_ability_ui")
 
-[node name="AbilitySwitchSound" type="AudioStreamPlayer" parent="." unique_id=486652668]
+[node name="japan" type="Sprite2D" parent="CanvasLayer/AbilityUI"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("5_a8y0u")
+
+[node name="mexican" type="Sprite2D" parent="CanvasLayer/AbilityUI"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("6_a8y0u")
+
+[node name="jason" type="Sprite2D" parent="CanvasLayer/AbilityUI"]
+visible = false
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("7_a8y0u")
+
+[node name="african" type="Sprite2D" parent="CanvasLayer/AbilityUI"]
+scale = Vector2(0.5, 0.5)
+texture = ExtResource("8_a8y0u")
+
+[node name="AbilitySwitchSound" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_tefeu")
 
 [node name="EatSound" type="AudioStreamPlayer" parent="." unique_id=542552818]
