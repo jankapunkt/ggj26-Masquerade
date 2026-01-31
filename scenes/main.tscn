@@ -23,7 +23,7 @@ shape = SubResource("CircleShape2D_sugp2")
 [node name="Chaser" type="Area2D" parent="." unique_id=1613410077]
 script = ExtResource("3_chaser")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Chaser"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chaser" unique_id=1499105187]
 shape = SubResource("RectangleShape2D_chaser")
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=825830947]

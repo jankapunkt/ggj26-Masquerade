@@ -46,7 +46,7 @@ var ability_config = {
 func _ready():
 	game_over_screen.visible = false
 	update_ability_display()
-	update_player_color()
+	init_player()
 	set_chaser_position()
 
 func _process(delta):
@@ -94,6 +94,17 @@ func update_chaser():
 	# chaser.position = Vector2(player.position.x, player.position.y - 100)
 	chaser.queue_redraw()
 
+func check_collision_with_chaser(chaser):
+	if game_over:
+		return
+	var distance = player.position.distance_to(chaser.position)
+	print_debug(distance)
+	# Conservative collision threshold for large enemies
+	# Player radius (125) + enemy radius (~459) = (rounded up) 585
+	if distance <= 585:
+		# Player loses - game over
+		trigger_game_over()
+	
 #-------------------------------------------------------------------------------
 # Enemies
 #-------------------------------------------------------------------------------
@@ -124,8 +135,8 @@ func check_collision_with_enemy(enemy):
 	var distance = player.position.distance_to(enemy.position)
 	print_debug(distance)
 	# Conservative collision threshold for large enemies
-	# Player radius (25) + enemy radius (varies by shape: ~459 for most shapes)
-	if distance < 585:
+	# Player radius (125) + enemy radius (~459) = (rounded up) 585
+	if distance <= 585:
 		# Check if player's ability wins against this enemy
 		if does_player_win(enemy.enemy_type):
 			# Player wins - remove enemy, player survives
@@ -159,12 +170,15 @@ func get_enemy_color(enemy_type: int) -> Color:
 # Player
 #-------------------------------------------------------------------------------
 
+func init_player():
+	player.position = Vector2(VIEWPORT_WIDTH / 2, VIEWPORT_HEIGHT / 2)
+	update_player_color()
+
 func update_ability_display():
 	var ability_name = ability_config[current_ability]["name"]
 	ability_label.text = "Ability %d: %s" % [current_ability, ability_name]
 
 func update_player_color():
-	player.position = Vector2(VIEWPORT_WIDTH / 2, VIEWPORT_HEIGHT / 2)
 	player.current_color = ability_config[current_ability]["color"]
 	player.queue_redraw()
 
