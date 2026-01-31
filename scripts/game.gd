@@ -10,6 +10,7 @@ const SCROLL_SPEED = 100.0  # Pixels per second
 
 # Enemy configuration
 const ENEMY_SIZE = 918.0  # 85% of screen width (1080 * 0.85 = 918)
+const MIN_ENEMY_SIZE = 100.0  # Minimum enemy size
 
 # Enemy spawn configuration
 var spawn_interval = 3.0  # Start with 3 seconds
@@ -123,7 +124,7 @@ func spawn_enemy():
 	var enemy = preload("res://scenes/enemy.tscn").instantiate()
 	
 	# Randomize initial enemy size to determine spawn constraints
-	var initial_size = randi_range(100, ENEMY_SIZE)
+	var initial_size = randi_range(MIN_ENEMY_SIZE, ENEMY_SIZE)
 	var enemy_radius = initial_size / 2
 	
 	# Calculate safe horizontal spawn range to ensure enemy fits within bounds

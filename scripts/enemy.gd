@@ -8,6 +8,7 @@ var size_initialized_by_spawner = false  # Track if size was set externally
 
 # Enemy size configuration - 85% of screen width (1080 * 0.85 = 918)
 const ENEMY_SIZE = 918.0
+const MIN_ENEMY_SIZE = 100.0  # Minimum enemy size
 
 var current_size = ENEMY_SIZE
 
@@ -16,8 +17,8 @@ var current_size = ENEMY_SIZE
 func _ready():
 	# Only set random size if not already set by spawner
 	if not size_initialized_by_spawner:
-		current_size = randi_range(100, ENEMY_SIZE)
-	move_speed = remap(current_size, 100, ENEMY_SIZE, 300, 120)
+		current_size = randi_range(MIN_ENEMY_SIZE, ENEMY_SIZE)
+	move_speed = remap(current_size, MIN_ENEMY_SIZE, ENEMY_SIZE, 300, 120)
 	add_to_group("enemy")
 
 func _process(delta):
