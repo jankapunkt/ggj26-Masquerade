@@ -9,7 +9,8 @@ var move_speed = 120.0
 const ENEMY_SIZE = 918.0
 
 func _ready():
-	connect("body_entered", Callable(self, "_on_body_entered"))
+	# connect("body_entered", Callable(self, "_on_body_entered"))
+	pass
 
 func _process(delta):
 	# Move enemy upward (creating illusion of player moving down)
@@ -45,11 +46,11 @@ func get_enemy_color() -> Color:
 		return get_parent().get_enemy_color(enemy_type)
 	# Fallback colors
 	match enemy_type:
-		1: return Color(0.58, 0.0, 0.83)   # Violet
-		2: return Color(1.0, 1.0, 0.0)     # Yellow
-		3: return Color(1.0, 0.0, 0.0)     # Red
-		4: return Color(0.0, 1.0, 0.0)     # Green
-		5: return Color(0.0, 0.0, 1.0)     # Blue
+		1: return Color(0.58, 0.0, 0.83, 0.7)   # Violet
+		2: return Color(1.0, 1.0, 0.0, 0.7)     # Yellow
+		3: return Color(1.0, 0.0, 0.0, 0.7)     # Red
+		4: return Color(0.0, 1.0, 0.0, 0.7)     # Green
+		5: return Color(0.0, 0.0, 1.0, 0.7)     # Blue
 		_: return Color.WHITE
 
 func draw_circle_enemy(base_color: Color):

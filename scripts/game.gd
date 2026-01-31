@@ -15,6 +15,7 @@ var spawn_decrease_rate = 0.1  # Decrease by 0.1 seconds each spawn
 
 # Drag force configuration
 const MIN_DRAG_DISTANCE = 0.1  # Minimum distance threshold to prevent division by zero when normalizing
+var drag_strength = 800.0 # Apply a strong drag force (x units/sec)
 
 # Game state
 var game_over = false
@@ -26,12 +27,12 @@ var current_ability = 1  # Default ability 1
 # Ability system configuration
 # Maps ability number to: [color, [enemies it wins against]]
 var ability_config = {
-	0: {"color": Color(1.0, 1.0, 1.0), "name": "White", "wins_against": []},
-	1: {"color": Color(0.58, 0.0, 0.83), "name": "Violet", "wins_against": [2, 4]},  # Violet wins 2,4
-	2: {"color": Color(1.0, 1.0, 0.0), "name": "Yellow", "wins_against": [3, 5]},    # Yellow wins 3,5
-	3: {"color": Color(1.0, 0.0, 0.0), "name": "Red", "wins_against": [4, 1]},       # Red wins 4,1
-	4: {"color": Color(0.0, 1.0, 0.0), "name": "Green", "wins_against": [5, 2]},     # Green wins 5,2
-	5: {"color": Color(0.0, 0.0, 1.0), "name": "Blue", "wins_against": [1, 3]},       # Blue wins 1,3
+	0: {"color": Color(1.0, 1.0, 1.0, 0.7), "name": "White", "wins_against": []},
+	1: {"color": Color(0.58, 0.0, 0.83, 0.7), "name": "Violet", "wins_against": [2, 4]},  # Violet wins 2,4
+	2: {"color": Color(1.0, 1.0, 0.0, 0.7), "name": "Yellow", "wins_against": [3, 5]},    # Yellow wins 3,5
+	3: {"color": Color(1.0, 0.0, 0.0, 0.7), "name": "Red", "wins_against": [4, 1]},       # Red wins 4,1
+	4: {"color": Color(0.0, 1.0, 0.0, 0.7), "name": "Green", "wins_against": [5, 2]},     # Green wins 5,2
+	5: {"color": Color(0.0, 0.0, 1.0, 0.7), "name": "Blue", "wins_against": [1, 3]},       # Blue wins 1,3
 }
 
 # Node references
@@ -69,6 +70,11 @@ func _process(delta):
 	# Update chaser to follow player
 	update_chaser()
 	
+	# instead of event based collision we do continuous collision
+	# to apply drag forces
+	if current_enemy != null:
+		check_collision_with_enemy(current_enemy)
+	
 	# Handle enemy spawning
 	time_since_last_spawn += delta
 	if time_since_last_spawn >= spawn_interval and current_enemy == null:
@@ -98,9 +104,8 @@ func check_collision_with_chaser(chaser):
 	if game_over:
 		return
 	var distance = player.position.distance_to(chaser.position)
-	print_debug(distance)
 	# Conservative collision threshold for large enemies
-	# Player radius (125) + enemy radius (~459) = (rounded up) 585
+	# Player radius (125) + chaser radius (~459) = (rounded up) 585
 	if distance <= 585:
 		# Player loses - game over
 		trigger_game_over()
@@ -133,7 +138,6 @@ func check_collision_with_enemy(enemy):
 		return
 	
 	var distance = player.position.distance_to(enemy.position)
-	print_debug(distance)
 	# Conservative collision threshold for large enemies
 	# Player radius (125) + enemy radius (~459) = (rounded up) 585
 	if distance <= 585:
@@ -143,8 +147,13 @@ func check_collision_with_enemy(enemy):
 			enemy.emit_signal("enemy_destroyed")
 			enemy.queue_free()
 		else:
-			# Player loses - game over
-			trigger_game_over()
+			# Player doesn't win - apply drag force towards chaser
+			# Calculate direction from player to chaser (upward, toward top of screen)
+			var direction_vector = chaser.position - player.position
+			# Only apply drag if there's a meaningful distance (avoid division by zero)
+			if direction_vector.length() > MIN_DRAG_DISTANCE:
+				var drag_direction = direction_vector.normalized()
+				player.drag_force = drag_direction * drag_strength
 
 
 func get_enemy_color(enemy_type: int) -> Color:
