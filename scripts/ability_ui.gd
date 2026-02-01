@@ -8,6 +8,15 @@ const VIEWPORT_WIDTH = 1350
 const PULSE_SPEED = 0.005  # Animation speed for pulsing effect
 const PULSE_INTENSITY = 0.2  # Scale factor for pulse animation
 
+# Score display configuration
+const SCORE_X_OFFSET = 150  # Distance from right edge
+const SCORE_Y_OFFSET = 60   # Distance below ability circles
+const SCORE_BG_WIDTH = 140
+const SCORE_BG_HEIGHT = 40
+const SCORE_BG_PADDING_X = 5
+const SCORE_BG_PADDING_Y = 30
+const SCORE_FONT_SIZE = 24
+
 @onready var ability_icons := {
 	1: $african,
 	2: $mexican,
@@ -86,15 +95,15 @@ func _draw():
 	# Draw score at bottom right
 	var score = parent_game_controller.current_score if "current_score" in parent_game_controller else 0
 	var score_text = "Score: %d" % score
-	var score_pos = Vector2(VIEWPORT_WIDTH - 150, Y_POSITION + 60)  # Bottom right, below the ability circles
+	var score_pos = Vector2(VIEWPORT_WIDTH - SCORE_X_OFFSET, Y_POSITION + SCORE_Y_OFFSET)
 	
 	# Draw background rectangle for score
-	var text_size = Vector2(140, 40)
-	var rect_pos = score_pos - Vector2(5, 30)
+	var text_size = Vector2(SCORE_BG_WIDTH, SCORE_BG_HEIGHT)
+	var rect_pos = score_pos - Vector2(SCORE_BG_PADDING_X, SCORE_BG_PADDING_Y)
 	draw_rect(Rect2(rect_pos, text_size), Color(0.0, 0.0, 0.0, 0.7))
 	
 	# Draw score text
-	draw_string(ThemeDB.fallback_font, score_pos, score_text, HORIZONTAL_ALIGNMENT_RIGHT, -1, 24, Color(1.0, 1.0, 1.0, 1.0))
+	draw_string(ThemeDB.fallback_font, score_pos, score_text, HORIZONTAL_ALIGNMENT_RIGHT, -1, SCORE_FONT_SIZE, Color(1.0, 1.0, 1.0, 1.0))
 
 func _process(_delta):
 	if parent_game_controller == null:
