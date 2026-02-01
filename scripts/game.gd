@@ -384,7 +384,7 @@ func get_gauge_percentage(ability_id: int) -> float:
 	return 1.0  # White ability always returns full
 
 func show_damage_text(pos: Vector2, damage: float):
-	"""Display damage text at the given position"""
+	# Display damage text at the given position
 	var damage_text = preload("res://scenes/damage_text.tscn").instantiate()
 	damage_text.position = pos
 	damage_text.set_damage(damage)

@@ -29,5 +29,5 @@ func _process(delta):
 		queue_free()
 
 func set_damage(damage_amount: float):
-	"""Set the damage amount to display"""
+	# Set the damage amount to display
 	text = str(int(damage_amount))
