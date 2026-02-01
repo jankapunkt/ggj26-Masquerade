@@ -18,3 +18,8 @@ export_credentials.cfg
 data_*/
 mono_crash.*.json
 icon.svg.import
+
+# ides
+.idea
+.vscode
+

@@ -82,7 +82,7 @@ func _physics_process(delta):
 			match current_type:
 				1: shoot_bullet()
 				2: shoot_shotgun()
-				3: shoot_shotgun()
+				3: shoot_bomb()
 				4: shoot_bullet()
 				_: shoot_shotgun()
 			# Consume gauge after shooting
@@ -164,6 +164,10 @@ func shoot_bullet():
 	change_to_shoot_sprite()
 	$ShootSound.stream = shoot_sounds_pistole.pick_random()
 	$ShootSound.play()
+	
+func shoot_bomb():
+	# to be implemented
+	pass
 
 # func _draw():
 	# Draw player as a circle with current ability color
