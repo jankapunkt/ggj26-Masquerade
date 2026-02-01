@@ -42,7 +42,8 @@ var droppables = []  # Track active droppables
 @onready var ability_switch_sound_effect = [
 	preload("res://assets/sounds/mask_switch_africa.wav"),
 	preload("res://assets/sounds/mask_switch_japan.wav"),
-	preload("res://assets/sounds/mask_switch_mexico.wav")
+	preload("res://assets/sounds/mask_switch_mexico.wav"),
+	preload("res://assets/sounds/chainsaw.wav"),
 ]
 #Background
 @onready var bg_a: Sprite2D = $Sprite2D_A
@@ -348,6 +349,8 @@ func init_player():
 	
 func playAbilitySwitchSound():
 	if ability_5_active:
+		$AbilitySwitchSound.stream = ability_switch_sound_effect.get(3)
+		$AbilitySwitchSound.play()
 		jason.visible = true
 		japan.visible = false
 		african.visible = false
