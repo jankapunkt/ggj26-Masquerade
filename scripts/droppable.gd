@@ -12,12 +12,10 @@ const SIZE = 50.0
 var move_speed = 120.0
 
 # Texture for yellow droppable
-var bomb_texture: Texture2D
+var bomb_texture: Texture2D = preload("res://assets/images/bomb.png")
 
 func _ready():
 	add_to_group("droppable")
-	# Load bomb texture for yellow droppables
-	bomb_texture = load("res://assets/images/bomb.png")
 	# Set up collision detection
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
