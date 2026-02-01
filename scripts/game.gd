@@ -231,7 +231,7 @@ func restart_game():
 #-------------------------------------------------------------------------------
 
 func set_chaser_position():
-	chaser.position = Vector2(VIEWPORT_WIDTH / 2, 0)
+	chaser.position = Vector2(VIEWPORT_WIDTH / 2, -3000)
 
 func update_chaser():
 	# Keep chaser static above player (fixed offset, not following)
@@ -285,6 +285,10 @@ func _on_enemy_destroyed(enemy):
 	
 	# Check if we should spawn a droppable
 	enemies_defeated_count += 1
+	
+	# Move chaser down by 1px for each enemy defeated
+	chaser.position = Vector2(chaser.position.x, chaser.position.y + 1)
+	
 	if enemies_defeated_count >= next_droppable_at:
 		spawn_droppable(enemy_pos)
 		# Set next droppable spawn at random interval (10-25 enemies)
@@ -330,7 +334,7 @@ func check_chaser_collision_with(enemy):
 		# if chaser "eats" an enemy, it grows and the enemy dies
 		$EatEnemySound.play()
 		enemy.shrink(10000)
-		chaser.position.y += 100
+		chaser.position = Vector2(chaser.position.x, chaser.position.y + 100)
 	
 
 func get_enemy_color(enemy_type: int) -> Color:
