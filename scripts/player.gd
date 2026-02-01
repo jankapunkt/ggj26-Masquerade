@@ -21,7 +21,7 @@ var time_since_last_shot := 0.0
 @onready var player_japan: Sprite2D = $japan
 @onready var player_africa: Sprite2D = $african
 @onready var player_mexico: Sprite2D = $mexican
-
+@onready var player_json: Sprite2D = $jason
 
 @onready var idle_texture_bob: Texture2D = preload("res://assets/images/bob.png")
 @onready var shoot_texture_bob: Texture2D = preload("res://assets/images/evil_bob_.png")

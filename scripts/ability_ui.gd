@@ -113,29 +113,11 @@ func _draw():
 	# Draw ability 5 indicator when active
 	if "ability_5_active" in parent_game_controller and parent_game_controller.ability_5_active:
 		var ability_5_timer = parent_game_controller.ability_5_timer if "ability_5_timer" in parent_game_controller else 0.0
-		var timer_text = "COLLISION DAMAGE: %.1fs" % ability_5_timer
-		var indicator_pos = Vector2(VIEWPORT_WIDTH / 2, ABILITY_5_INDICATOR_Y)
+		var circle_pos = Vector2(550, Y_POSITION)
+		var gauge_percentage = ability_5_timer / 5
+		var gauge_angle = TAU * gauge_percentage 
+		draw_arc(circle_pos, CIRCLE_RADIUS + 4, 0, gauge_angle, 32, Color(1.0, 1.0, 1.0, 1.0), 6.0)
 		
-		# Calculate actual text size for background
-		var font = ThemeDB.fallback_font
-		var text_size = font.get_string_size(timer_text, HORIZONTAL_ALIGNMENT_CENTER, -1, ABILITY_5_FONT_SIZE)
-		var bg_rect = Rect2(
-			indicator_pos.x - text_size.x / 2 - ABILITY_5_BG_PADDING,
-			indicator_pos.y - ABILITY_5_FONT_SIZE - ABILITY_5_BG_PADDING / 2,
-			text_size.x + ABILITY_5_BG_PADDING * 2,
-			ABILITY_5_FONT_SIZE + ABILITY_5_BG_PADDING
-		)
-		
-		# Pulse effect for the indicator
-		var pulse = sin(Time.get_ticks_msec() * 0.005) * 0.2 + 0.8
-		var indicator_color = Color(1.0, 1.0, 1.0, pulse)
-		
-		# Draw background with pulsing glow
-		draw_rect(bg_rect, Color(1.0, 0.0, 0.0, 0.3 * pulse))
-		draw_rect(bg_rect, Color(1.0, 1.0, 1.0, 0.8 * pulse), false, 3.0)
-		
-		# Draw text
-		draw_string(ThemeDB.fallback_font, indicator_pos, timer_text, HORIZONTAL_ALIGNMENT_CENTER, -1, ABILITY_5_FONT_SIZE, indicator_color)
 
 func _process(_delta):
 	if parent_game_controller == null:
