@@ -452,6 +452,14 @@ func consume_gauge():
 	"""Decrease gauge for current ability after shooting"""
 	if current_ability in ability_gauges:
 		ability_gauges[current_ability] = max(0, ability_gauges[current_ability] - GAUGE_DECREASE[current_ability])
+		
+		# Check if gauge is now empty (cannot shoot anymore) - fallback to ability 4
+		if ability_gauges[current_ability] < GAUGE_DECREASE[current_ability]:
+			print_debug("Gauge empty for ability ", current_ability, " - falling back to ability 4")
+			current_ability = 4
+			playAbilitySwitchSound()
+			update_player_color()
+			player.current_type = current_ability
 
 func get_gauge_percentage(ability_id: int) -> float:
 	"""Get the gauge level as a percentage (0.0 to 1.0)"""
