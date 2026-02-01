@@ -486,18 +486,3 @@ func show_damage_text(pos: Vector2, damage: float):
 	damage_text.position = pos
 	damage_text.set_damage(damage)
 	add_child(damage_text)
-
-'func _draw():
-	# Draw scrolling background pattern
-	var tile_size = 100
-	var y_offset = int(scroll_offset) % tile_size
-	
-	for y in range(-1, int(VIEWPORT_HEIGHT / tile_size) + 2):
-		for x in range(int(VIEWPORT_WIDTH / tile_size) + 1):
-			var pos_y = y * tile_size - y_offset
-			var pos_x = x * tile_size
-			var color = Color(0.1, 0.1, 0.15, 1.0)
-			if (x + y) % 2 == 0:
-				color = Color(0.15, 0.15, 0.2, 1.0)
-			draw_rect(Rect2(pos_x, pos_y, tile_size - 2, tile_size - 2), color)
-'
