@@ -58,13 +58,21 @@ var ability_config = {
 	1: {"color": Color(1.0, 0.0, 0.0, 0.1), "name": "Red", "wins_against": [1, 2, 3], "shrink": [9, 15]},
 	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [1, 2, 3], "shrink": [67,79] },
 	3: {"color": Color(0.0, 0.0, 1.0, 0.1), "name": "Blue", "wins_against": [1, 2, 3], "shrink": [35, 200] },
-	4: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "White", "wins_against": [1,2, 3], "shrink": [8, 13]}
+	4: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "White", "wins_against": [1,2, 3], "shrink": [8, 13]},
+	5: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "Jason", "wins_against": [1,2, 3], "shrink": [5000, 10000]},
 }
 
 # Gauge system configuration
 const MAX_GAUGE = 100.0
 const GAUGE_REFILL_RATE = 300.0  # Units per second when White ability is active
 var do_refill_gauge = false
+
+# Ability 5 configuration (collision damage)
+const ABILITY_5_DURATION = 5.0  # Duration in seconds
+const ABILITY_5_DAMAGE = 5000  # Damage dealt on collision
+var ability_5_active = false  # Whether ability 5 is currently active
+var ability_5_timer = 0.0  # Time remaining for ability 5
+var ability_5_prev = 4	# old player ability
 
 # Gauge tracking for abilities 1-3 (Red, Green, Blue)
 var ability_gauges = {
@@ -127,30 +135,31 @@ func _process(delta):
 	update_background(delta)
 
 
-	# Handle ability switching
-	for i in range(1, 5):
-		if Input.is_action_just_pressed("ability_%d" % i):
-			print_debug('ability pressed', i)
-			current_ability = i
+	if not ability_5_active:
+		# Handle ability switching
+		for i in range(1, 5):
+			if Input.is_action_just_pressed("ability_%d" % i):
+				print_debug('ability pressed', i)
+				current_ability = i
+				playAbilitySwitchSound()
+				update_player_color()
+		
+		if Input.is_action_just_pressed("ability_left"):
+			current_ability = current_ability - 1
+			if current_ability < 1:
+				current_ability = 4
+			playAbilitySwitchSound()
+			update_player_color()
+			
+		if Input.is_action_just_pressed("ability_right"):
+			current_ability = current_ability + 1
+			if current_ability > 4:
+				current_ability = 1
 			playAbilitySwitchSound()
 			update_player_color()
 	
-	if Input.is_action_just_pressed("ability_left"):
-		current_ability = current_ability - 1
-		if current_ability < 1:
-			current_ability = 4
-		playAbilitySwitchSound()
-		update_player_color()
-		
-	if Input.is_action_just_pressed("ability_right"):
-		current_ability = current_ability + 1
-		if current_ability > 4:
-			current_ability = 1
-		playAbilitySwitchSound()
-		update_player_color()
-	
-	# update player
-	player.current_type = current_ability
+		# update player
+		player.current_type = current_ability
 	
 	# Update scroll effect
 	scroll_offset += SCROLL_SPEED * delta
@@ -173,6 +182,16 @@ func _process(delta):
 	if do_refill_gauge:
 		refill_gauges(current_ability, delta)
 	do_refill_gauge = false
+	
+	# Handle ability 5 timer countdown
+	if ability_5_active:
+		ability_5_timer -= delta
+		if ability_5_timer <= 0:
+			ability_5_active = false
+			player.current_type = current_ability
+			ability_5_timer = 0.0
+			print_debug("Ability 5 deactivated")
+			playAbilitySwitchSound()
 	
 	# Handle enemy spawning
 	time_since_last_spawn += delta
@@ -280,6 +299,16 @@ func check_player_collision_with(enemy):
 	# Player radius (125) + enemy radius (current_size / 2) + small buffer
 	var collision_threshold = 125 + (enemy.current_size / 2) + 10
 	if distance <= collision_threshold:
+		# Check if ability 5 is active - if so, damage the enemy instead of applying drag
+		if ability_5_active:
+			enemy.shrink(ABILITY_5_DAMAGE)
+			# Still apply some drag force but reduced
+			var direction_vector = chaser.position - player.position
+			if direction_vector.length() > MIN_DRAG_DISTANCE:
+				var drag_direction = direction_vector.normalized()
+				player.drag_force = drag_direction * (drag_strength * 0.3)  # Reduced drag when ability 5 is active
+			return
+		
 		# Player doesn't win - apply drag force towards chaser
 		# Calculate direction from player to chaser (upward, toward top of screen)
 		var direction_vector = chaser.position - player.position
@@ -321,6 +350,7 @@ func playAbilitySwitchSound():
 	var ability_name = ability_config[current_ability]["name"]
 	if ability_name == "Red":
 		$AbilitySwitchSound.stream = ability_switch_sound_effect.get(0)
+		jason.visible = false
 		japan.visible = false
 		african.visible = true
 		mexican.visible = false
@@ -329,6 +359,7 @@ func playAbilitySwitchSound():
 	elif ability_name == "Blue":
 		$AbilitySwitchSound.stream = ability_switch_sound_effect.get(1)
 		$AbilitySwitchSound.play()
+		jason.visible = false
 		japan.visible = true
 		african.visible = false
 		mexican.visible = false
@@ -336,11 +367,19 @@ func playAbilitySwitchSound():
 	elif ability_name == "Green":
 		$AbilitySwitchSound.stream = ability_switch_sound_effect.get(2)
 		$AbilitySwitchSound.play()
+		jason.visible = false
 		japan.visible = false
 		african.visible = false
 		mexican.visible = true
 		bob.visible = true
-	else: 
+	elif ability_name == "Jason":
+		jason.visible = true
+		japan.visible = false
+		african.visible = false
+		mexican.visible = false
+		bob.visible = true
+	else:
+		jason.visible = false
 		japan.visible = false
 		african.visible = false
 		mexican.visible = false
@@ -423,8 +462,8 @@ func get_gauge_percentage(ability_id: int) -> float:
 func spawn_droppable(position: Vector2):
 	var droppable = preload("res://scenes/droppable.tscn").instantiate()
 	
-	# Randomly choose droppable type (0 = Yellow, 1 = Orange)
-	var type = randi() % 2
+	# Randomly choose droppable type (0 = Yellow, 1 = Orange, 2 = White)
+	var type = randi() % 3
 	droppable.droppable_type = type
 	
 	droppable.position = position
@@ -466,6 +505,13 @@ func _on_droppable_picked_up(droppable):
 			print_debug("Orange droppable picked up - refilling all gauges")
 			for ability_id in ability_gauges.keys():
 				ability_gauges[ability_id] = MAX_GAUGE
+		2:  # White - activate ability 5 for 5 seconds
+			print_debug("White droppable picked up - activating ability 5 for ", ABILITY_5_DURATION, " seconds")
+			ability_5_active = true
+			ability_5_prev = player.current_type
+			player.current_type = 5
+			ability_5_timer = ABILITY_5_DURATION
+			playAbilitySwitchSound()
 	
 	# Remove droppable from tracking
 	if droppable in droppables:
