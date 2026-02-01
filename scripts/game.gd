@@ -447,7 +447,9 @@ func _on_droppable_picked_up(droppable):
 	match droppable_type:
 		0:  # Yellow - shrink all current enemies by 5000
 			print_debug("Yellow droppable picked up - shrinking all enemies by 5000")
-			for enemy in enemies:
+			# Iterate over a copy to avoid issues when enemies get destroyed during iteration
+			var enemies_copy = enemies.duplicate()
+			for enemy in enemies_copy:
 				if enemy and is_instance_valid(enemy):
 					enemy.shrink(5000)
 		1:  # Orange - refill all gauges to maximum
@@ -462,6 +464,11 @@ func _on_droppable_picked_up(droppable):
 	# Queue droppable for deletion
 	if is_instance_valid(droppable):
 		droppable.queue_free()
+
+# Handle droppable removal when it goes off-screen
+func _on_droppable_removed(droppable):
+	if droppable in droppables:
+		droppables.erase(droppable)
 
 func show_damage_text(pos: Vector2, damage: float):
 	# Display damage text at the given position

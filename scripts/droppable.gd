@@ -8,12 +8,25 @@ enum DroppableType {
 @export var droppable_type: DroppableType = DroppableType.YELLOW
 const SIZE = 50.0
 
+# Movement configuration - match enemy movement speed
+var move_speed = 120.0
+
 func _ready():
 	add_to_group("droppable")
 	# Set up collision detection
 	connect("area_entered", Callable(self, "_on_area_entered"))
 	connect("body_entered", Callable(self, "_on_body_entered"))
 	queue_redraw()  # Make sure the droppable is visible
+
+func _process(delta):
+	# Move droppable upward (same as enemies)
+	position.y -= move_speed * delta
+	
+	# Remove if off screen (top)
+	if position.y < -100:
+		if get_parent().has_method("_on_droppable_removed"):
+			get_parent()._on_droppable_removed(self)
+		queue_free()
 
 func _draw():
 	var color: Color
