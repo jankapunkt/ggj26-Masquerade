@@ -45,6 +45,10 @@ var drag_force = Vector2.ZERO
 	preload("res://assets/sounds/weapons/pistole/Pew_3.wav")
 ]
 
+@onready var shoot_sound_bomb = [
+	preload("res://assets/sounds/weapons/bomb/bomb_sound_1.wav")
+]
+
 @onready var shoot_sounds_shotgun = [
 	preload("res://assets/sounds/weapons/shotgun/shotgun_pew1.wav"),
 	preload("res://assets/sounds/weapons/shotgun/shotgun_pew2.wav"),
@@ -154,6 +158,7 @@ func shoot_shotgun():
 		bullet.velocity = direction * bullet_speed
 		get_parent().add_child(bullet)
 	change_to_shoot_sprite()
+	$ShootSound.pitch_scale = 1
 	$ShootSound.stream = shoot_sounds_shotgun.pick_random()
 	$ShootSound.play()
 
@@ -163,6 +168,7 @@ func shoot_bullet():
 	bullet.connect("bullet_hit_enemy", Callable(get_parent(), "_on_bullet_hit_enemy"))
 	get_parent().add_child(bullet)
 	change_to_shoot_sprite()
+	$ShootSound.pitch_scale = 1
 	$ShootSound.stream = shoot_sounds_pistole.pick_random()
 	$ShootSound.play()
 	
@@ -171,7 +177,8 @@ func shoot_bomb():
 	bomb.position = position
 	get_parent().add_child(bomb)
 	change_to_shoot_sprite()
-	$ShootSound.stream = shoot_sounds_pistole.pick_random()
+	$ShootSound.stream = shoot_sound_bomb[0]
+	$ShootSound.pitch_scale = 0.5
 	$ShootSound.play()
 
 # func _draw():

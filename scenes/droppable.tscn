@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://c7y9k3n5p7r9s"]
+[gd_scene load_steps=0 format=3 uid="uid://c70ak3n5p7sas"]
 
 [ext_resource type="Script" uid="uid://bxv8k3m4n5p6q" path="res://scripts/droppable.gd" id="1_droppable"]
 

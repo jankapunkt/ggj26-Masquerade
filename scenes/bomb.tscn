@@ -1,4 +1,4 @@
-[gd_scene format=3 uid="uid://b50nas7mihc5i"]
+[gd_scene load_steps=0 format=3 uid="uid://b50nas7mihc5i"]
 
 [ext_resource type="Script" uid="uid://bomb1234568aa" path="res://scripts/bomb.gd" id="1_bomb"]
 

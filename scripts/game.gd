@@ -298,8 +298,10 @@ func check_chaser_collision_with(enemy):
 	var collision_threshold = 125 + (enemy.current_size / 2) + 10
 	if distance <= collision_threshold:
 		# if chaser "eats" an enemy, it grows and the enemy dies
+		$EatEnemySound.play()
 		enemy.shrink(10000)
 		chaser.position.y += 100
+	
 
 func get_enemy_color(enemy_type: int) -> Color:
 	# Return the color for the given enemy type (enemies use same colors as abilities)
