@@ -55,10 +55,10 @@ const BG_HEIGHT = 1920
 # Ability system configuration
 # Maps ability number to: [color, [enemies it wins against]]
 var ability_config = {
-	1: {"color": Color(1.0, 0.0, 0.0, 0.1), "name": "Red", "wins_against": [1, 2, 3], "shrink": 12},
-	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [1, 2, 3], "shrink": 75 },
-	3: {"color": Color(0.0, 0.0, 1.0, 0.1), "name": "Blue", "wins_against": [1, 2, 3], "shrink": 35 },
-	4: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "White", "wins_against": [1,2, 3], "shrink": 10}
+	1: {"color": Color(1.0, 0.0, 0.0, 0.1), "name": "Red", "wins_against": [1, 2, 3], "shrink": [9, 15]},
+	2: {"color": Color(0.0, 1.0, 0.0, 0.1), "name": "Green", "wins_against": [1, 2, 3], "shrink": [67,79] },
+	3: {"color": Color(0.0, 0.0, 1.0, 0.1), "name": "Blue", "wins_against": [1, 2, 3], "shrink": [35, 200] },
+	4: {"color": Color(1.0, 1.0, 1.0, 0.1), "name": "White", "wins_against": [1,2, 3], "shrink": [8, 13]}
 }
 
 # Gauge system configuration
@@ -83,6 +83,7 @@ const GAUGE_DECREASE = {
 @onready var player = $Player
 @onready var chaser = $Chaser
 @onready var game_over_screen = $CanvasLayer/GameOverScreen
+@onready var pause_screen = $CanvasLayer/PauseScreen
 @onready var ability_label = $CanvasLayer/AbilityLabel
 
 
@@ -92,7 +93,9 @@ const GAUGE_DECREASE = {
 func _ready():
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	game_over_screen.visible = false
-	update_ability_display()
+	pause_screen.visible = true
+	get_tree().paused = true
+	
 	init_player()
 	set_chaser_position()
 	japan.visible = false
@@ -108,6 +111,7 @@ func toggle_pause():
 	
 	var is_paused = !get_tree().paused
 	get_tree().paused = is_paused
+	pause_screen.visible = is_paused
 	
 var mat: ShaderMaterial
 func _process(delta):
@@ -129,7 +133,6 @@ func _process(delta):
 			print_debug('ability pressed', i)
 			current_ability = i
 			playAbilitySwitchSound()
-			update_ability_display()
 			update_player_color()
 	
 	if Input.is_action_just_pressed("ability_left"):
@@ -137,7 +140,6 @@ func _process(delta):
 		if current_ability < 1:
 			current_ability = 4
 		playAbilitySwitchSound()
-		update_ability_display()
 		update_player_color()
 		
 	if Input.is_action_just_pressed("ability_right"):
@@ -145,7 +147,6 @@ func _process(delta):
 		if current_ability > 4:
 			current_ability = 1
 		playAbilitySwitchSound()
-		update_ability_display()
 		update_player_color()
 	
 	# update player
@@ -315,10 +316,6 @@ func get_enemy_color(enemy_type: int) -> Color:
 func init_player():
 	player.position = Vector2(VIEWPORT_WIDTH / 2, VIEWPORT_HEIGHT / 2)
 	update_player_color()
-
-func update_ability_display():
-	var ability_name = ability_config[current_ability]["name"]
-	ability_label.text = "Ability %d: %s" % [current_ability, ability_name]
 	
 func playAbilitySwitchSound():
 	var ability_name = ability_config[current_ability]["name"]
@@ -376,7 +373,8 @@ func _on_bullet_hit_enemy(enemy):
 	if enemy and is_instance_valid(enemy):
 		var enemy_type = enemy.enemy_type
 		if enemy_type in ability_config[current_ability]["wins_against"]:
-			var damage_amount = ability_config[current_ability]["shrink"]
+			var shrink = ability_config[current_ability]["shrink"]
+			var damage_amount = randi_range(shrink[0], shrink[1])
 			enemy.shrink(damage_amount)
 			do_refill_gauge = true
 			# Increase score by 1 when bullet hits an enemy
