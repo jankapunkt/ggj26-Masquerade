@@ -353,7 +353,7 @@ func play_death_sound(stream: AudioStream, position: Vector2):
 	var sfx := AudioStreamPlayer2D.new()
 	sfx.stream = stream
 	sfx.position = position
-	sfx.volume_db = 10
+	#sfx.volume_db = 0
 	add_child(sfx)
 	sfx.play()
 	sfx.finished.connect(sfx.queue_free)
