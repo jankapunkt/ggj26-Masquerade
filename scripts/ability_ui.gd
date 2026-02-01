@@ -19,6 +19,7 @@ var parent_game_controller = null
 var last_ability = -1
 var last_enemy = null
 var last_gauge_values = {}  # Track gauge values to detect changes
+var last_score = -1  # Track score to detect changes
 
 func _ready():
 	# Get reference to game controller (grandparent node: CanvasLayer -> Game)
@@ -81,15 +82,36 @@ func _draw():
 		
 		# Note: Ability numbers are conveyed through position and color
 		# Text drawing is omitted to keep the UI minimal and avoid font dependencies
+	
+	# Draw score at bottom right
+	var score = parent_game_controller.current_score if "current_score" in parent_game_controller else 0
+	var score_text = "Score: %d" % score
+	var score_pos = Vector2(VIEWPORT_WIDTH - 150, Y_POSITION + 60)  # Bottom right, below the ability circles
+	
+	# Draw background rectangle for score
+	var text_size = Vector2(140, 40)
+	var rect_pos = score_pos - Vector2(5, 30)
+	draw_rect(Rect2(rect_pos, text_size), Color(0.0, 0.0, 0.0, 0.7))
+	
+	# Draw score text
+	draw_string(ThemeDB.fallback_font, score_pos, score_text, HORIZONTAL_ALIGNMENT_RIGHT, -1, 24, Color(1.0, 1.0, 1.0, 1.0))
 
 func _process(_delta):
 	if parent_game_controller == null:
 		return
 	
-	# Check if state has changed (ability switch, enemy spawn/destroy, or gauge change)
+	# Check if state has changed (ability switch, enemy spawn/destroy, gauge change, or score change)
 	var current_ability = parent_game_controller.current_ability
 	var current_enemy = parent_game_controller.current_enemy
 	var gauges_changed = false
+	var score_changed = false
+	
+	# Check if score has changed
+	if "current_score" in parent_game_controller:
+		var current_score = parent_game_controller.current_score
+		if current_score != last_score:
+			last_score = current_score
+			score_changed = true
 	
 	# Check if gauges have changed
 	if parent_game_controller.has_method("get_gauge_percentage"):
@@ -99,7 +121,7 @@ func _process(_delta):
 				last_gauge_values[i] = current_gauge
 				gauges_changed = true
 	
-	if current_ability != last_ability or current_enemy != last_enemy or gauges_changed:
+	if current_ability != last_ability or current_enemy != last_enemy or gauges_changed or score_changed:
 		last_ability = current_ability
 		last_enemy = current_enemy
 		queue_redraw()
