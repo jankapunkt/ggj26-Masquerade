@@ -59,20 +59,23 @@ See [GAME_README.md](GAME_README.md) for detailed documentation.
 ggj26-mvp/
 ├── project.godot           # Main project configuration
 ├── icon.svg                # Project icon
+├── assets/                 # Game assets
+│   ├── images/             # Images
+│   ├── sounds/             # Sounds
 ├── scenes/                 # Game scenes
-│   ├── main.tscn          # Main game scene
-│   └── enemy.tscn         # Enemy scene
+│   ├── main.tscn           # Main game scene
+│   └── enemy.tscn          # Enemy scene
 ├── scripts/                # Game scripts
-│   ├── game.gd            # Core game logic
-│   ├── player.gd          # Player controller
-│   ├── chaser.gd          # Chase entity
-│   └── enemy.gd           # Enemy behavior
+│   ├── game.gd             # Core game logic
+│   ├── player.gd           # Player controller
+│   ├── chaser.gd           # Chase entity
+│   └── enemy.gd            # Enemy behavior
 ├── tetris/                 # Tetris prototype (separate project)
-│   ├── project.godot      # Tetris project file
+│   ├── project.godot       # Tetris project file
 │   ├── scenes/
 │   └── scripts/
-├── README.md              # This file
-└── GAME_README.md         # Detailed game documentation
+├── README.md               # This file
+└── GAME_README.md          # Detailed game documentation
 ```
 
 ## Development Notes
