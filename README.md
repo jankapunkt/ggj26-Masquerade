@@ -1,6 +1,7 @@
 # Masquerade
 Our GGJ26 Game Project.
 
+![title image](assets/title.png)
 
 
 ## Project Setup

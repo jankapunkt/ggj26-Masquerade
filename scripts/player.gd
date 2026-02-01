@@ -148,21 +148,25 @@ func change_to_shoot_sprite():
 
 	
 func shoot_shotgun(): 
+	var bullet
 	for i in pellet_count:
-		var bullet = bullet_scene.instantiate()
-		bullet.connect("bullet_hit_enemy", Callable(get_parent(), "_on_bullet_hit_enemy"))
+		bullet = bullet_scene.instantiate()
 		bullet.position = position
-		
-		# Random spread
+		bullet.connect("bullet_hit_enemy", Callable(get_parent(), "_on_bullet_hit_enemy"))
+
+# Random spread
 		var angle_offset = deg_to_rad(randf_range(-spread_angle/2, spread_angle/2))
-		var direction = Vector2.DOWN.rotated(angle_offset)  # base is DOWN
-		
-		bullet.velocity = direction * bullet_speed
+		var direction = Vector2.DOWN.rotated(angle_offset)
+		bullet.velocity = direction * bullet_speed  # assuming current_type 1->leaf, 2->fist, 3->tear
+
 		get_parent().add_child(bullet)
+		bullet.set_texture(2)
+
 	change_to_shoot_sprite()
 	$ShootSound.pitch_scale = 1
 	$ShootSound.stream = shoot_sounds_shotgun.pick_random()
 	$ShootSound.play()
+
 
 func shoot_bullet():
 	var bullet = bullet_scene.instantiate()
@@ -173,6 +177,7 @@ func shoot_bullet():
 	$ShootSound.pitch_scale = 1
 	$ShootSound.stream = shoot_sounds_pistole.pick_random()
 	$ShootSound.play()
+	bullet.set_texture(0)
 	
 func shoot_bomb():
 	var bomb = bomb_scene.instantiate()

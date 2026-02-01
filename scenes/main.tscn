@@ -65,70 +65,70 @@ animations = [{
 "speed": 30.0
 }]
 
-[node name="Game" type="Node2D" unique_id=329377001]
+[node name="Game" type="Node2D" unique_id=869342480]
 script = ExtResource("1_main")
 
-[node name="Sprite2D_A" type="Sprite2D" parent="." unique_id=2097878654]
+[node name="Sprite2D_A" type="Sprite2D" parent="." unique_id=1601537284]
 position = Vector2(540, 0)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_tefeu")
 
-[node name="Sprite2D_B" type="Sprite2D" parent="." unique_id=897323872]
+[node name="Sprite2D_B" type="Sprite2D" parent="." unique_id=1834248210]
 position = Vector2(540, 1920)
 scale = Vector2(2.5, 2.5)
 texture = ExtResource("2_tefeu")
 
-[node name="Player" type="CharacterBody2D" parent="." unique_id=1615455474 groups=["player"]]
+[node name="Player" type="CharacterBody2D" parent="." unique_id=724647352 groups=["player"]]
 process_mode = 1
 script = ExtResource("2_player")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1398256258]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player" unique_id=1546963064]
 visible = false
 shape = SubResource("CircleShape2D_sugp2")
 
-[node name="ShootSound" type="AudioStreamPlayer" parent="Player" unique_id=1637965033]
+[node name="ShootSound" type="AudioStreamPlayer" parent="Player" unique_id=336957029]
 stream = ExtResource("3_tbgi4")
 
-[node name="bob" type="Sprite2D" parent="Player" unique_id=646672166]
+[node name="bob" type="Sprite2D" parent="Player" unique_id=1222474082]
 scale = Vector2(0.55, 0.55)
 texture = ExtResource("9_jkv2x")
 
-[node name="japan" type="Sprite2D" parent="Player" unique_id=866703798]
+[node name="japan" type="Sprite2D" parent="Player" unique_id=250395906]
 scale = Vector2(0.55, 0.55)
 texture = ExtResource("6_jbj1t")
 
-[node name="mexican" type="Sprite2D" parent="Player" unique_id=1151643226]
+[node name="mexican" type="Sprite2D" parent="Player" unique_id=261864472]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_a8y0u")
 
-[node name="jason" type="Sprite2D" parent="Player" unique_id=86664866]
+[node name="jason" type="Sprite2D" parent="Player" unique_id=297555446]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("7_a8y0u")
 
-[node name="african" type="Sprite2D" parent="Player" unique_id=1109075447]
+[node name="african" type="Sprite2D" parent="Player" unique_id=808892239]
 scale = Vector2(0.57, 0.57)
 texture = ExtResource("8_a8y0u")
 
-[node name="Chaser" type="Area2D" parent="." unique_id=1615191002]
+[node name="Chaser" type="Area2D" parent="." unique_id=551718861]
 script = ExtResource("3_chaser")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Chaser" unique_id=435841543]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Chaser" unique_id=522653420]
 shape = SubResource("RectangleShape2D_chaser")
 
-[node name="Sprite2D" type="Sprite2D" parent="Chaser/CollisionShape2D" unique_id=1484102213]
+[node name="Sprite2D" type="Sprite2D" parent="Chaser/CollisionShape2D" unique_id=223260764]
 visible = false
 texture = ExtResource("4_tbgi4")
 offset = Vector2(0, 100)
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Chaser/CollisionShape2D" unique_id=697813548]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Chaser/CollisionShape2D" unique_id=1157754409]
 sprite_frames = SubResource("SpriteFrames_dgi5k")
 animation = &"idle"
 offset = Vector2(0, 100)
 script = ExtResource("20_5q0nq")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1841726506]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=326497635]
 
-[node name="GameOverScreen" type="Control" parent="CanvasLayer" unique_id=676847476]
+[node name="GameOverScreen" type="Control" parent="CanvasLayer" unique_id=540264423]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -136,7 +136,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer/GameOverScreen" unique_id=442430396]
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/GameOverScreen" unique_id=2134476239]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -145,7 +145,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 1)
 
-[node name="Label" type="Label" parent="CanvasLayer/GameOverScreen" unique_id=1719202072]
+[node name="Label" type="Label" parent="CanvasLayer/GameOverScreen" unique_id=197165374]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -164,7 +164,7 @@ text = "The final scene has been played"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="RestartLabel" type="Label" parent="CanvasLayer/GameOverScreen" unique_id=1493206556]
+[node name="RestartLabel" type="Label" parent="CanvasLayer/GameOverScreen" unique_id=1856336207]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -182,7 +182,7 @@ text = "Press ENTER to restart"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="deadbob" type="TextureRect" parent="CanvasLayer/GameOverScreen" unique_id=1107828041]
+[node name="deadbob" type="TextureRect" parent="CanvasLayer/GameOverScreen" unique_id=302289508]
 layout_mode = 0
 offset_left = 300.0
 offset_top = 300.0
@@ -190,7 +190,7 @@ offset_right = 800.0
 offset_bottom = 800.0
 texture = ExtResource("21_2wyq8")
 
-[node name="PauseScreen" type="Control" parent="CanvasLayer" unique_id=2037257739]
+[node name="PauseScreen" type="Control" parent="CanvasLayer" unique_id=1992844311]
 process_mode = 3
 visible = false
 layout_mode = 3
@@ -200,7 +200,7 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer/PauseScreen" unique_id=2118764863]
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer/PauseScreen" unique_id=1023440911]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -209,7 +209,7 @@ grow_horizontal = 2
 grow_vertical = 2
 color = Color(0, 0, 0, 0.8)
 
-[node name="TitleLabel" type="Label" parent="CanvasLayer/PauseScreen" unique_id=418665710]
+[node name="TitleLabel" type="Label" parent="CanvasLayer/PauseScreen" unique_id=1274192601]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -228,7 +228,7 @@ text = "MASQUERADE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="PauseControlsLabel" type="Label" parent="CanvasLayer/PauseScreen" unique_id=1818038407]
+[node name="PauseControlsLabel" type="Label" parent="CanvasLayer/PauseScreen" unique_id=1664082474]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -256,36 +256,36 @@ Escape: Pause / Resume"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AbilityUI" type="Node2D" parent="CanvasLayer" unique_id=207005855]
+[node name="AbilityUI" type="Node2D" parent="CanvasLayer" unique_id=797758758]
 script = ExtResource("4_ability_ui")
 
-[node name="japan" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=835171897]
+[node name="japan" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=1424654736]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_jbj1t")
 
-[node name="mexican" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=271442054]
+[node name="mexican" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=8493658]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("6_a8y0u")
 
-[node name="jason" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=1151566231]
+[node name="jason" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=1447250956]
 visible = false
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("7_a8y0u")
 
-[node name="african" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=847044016]
+[node name="african" type="Sprite2D" parent="CanvasLayer/AbilityUI" unique_id=1965648677]
 scale = Vector2(0.5, 0.5)
 texture = ExtResource("8_a8y0u")
 
-[node name="AbilitySwitchSound" type="AudioStreamPlayer" parent="." unique_id=1851274914]
+[node name="AbilitySwitchSound" type="AudioStreamPlayer" parent="." unique_id=1735305324]
 stream = ExtResource("6_tefeu")
 
-[node name="EatSound" type="AudioStreamPlayer" parent="." unique_id=1456035558]
+[node name="EatSound" type="AudioStreamPlayer" parent="." unique_id=1715868024]
 stream = ExtResource("9_85g3d")
 pitch_scale = 0.8
 
-[node name="DeathSound" type="AudioStreamPlayer" parent="." unique_id=682975762]
+[node name="DeathSound" type="AudioStreamPlayer" parent="." unique_id=154236237]
 stream = ExtResource("10_choun")
 volume_db = -0.5
 
-[node name="EatEnemySound" type="AudioStreamPlayer" parent="." unique_id=495414476]
+[node name="EatEnemySound" type="AudioStreamPlayer" parent="." unique_id=1877773548]
 stream = ExtResource("25_og1vs")
