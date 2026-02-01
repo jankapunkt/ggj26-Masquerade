@@ -13,6 +13,13 @@ const KILL_SIZE = 30
 
 var current_size = MIN_ENEMY_SIZE
 
+
+
+@onready var death_sounds = [
+	preload("res://assets/sounds/enemy/enemy_death_1.wav"),
+	preload("res://assets/sounds/enemy/enemy_death_2.wav"),
+	preload("res://assets/sounds/enemy/death_enemy_3.wav")
+]
 @onready var collision_shape = $CollisionShape2D
 
 func _ready():
@@ -71,9 +78,11 @@ func draw_circle_enemy(base_color: Color):
 func shrink(rate):
 	current_size -= rate
 	if current_size <= KILL_SIZE:
-		print_debug("enemy destroyed dispatch")
+		$DeathSound.stream = death_sounds.pick_random()
+		$DeathSound.play()
 		emit_signal("enemy_destroyed", self)
 		queue_free()
+
 	else:
 		# Update collision shape radius
 		$HitSound.play()
