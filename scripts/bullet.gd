@@ -2,27 +2,29 @@ extends Area2D
 
 signal bullet_hit_enemy(enemy)
 
-const BULLET_RADIUS = 10.0
-const VIEWPORT_HEIGHT = 1920
-
-# Add velocity for direction
-var velocity: Vector2 = Vector2.DOWN * 600  # default downwards
+@onready var bullet_sprite: Sprite2D = $BulletSprite
+var velocity: Vector2 = Vector2.DOWN * 600
+var bullet_textures: Array[Texture2D] = [
+	preload("res://assets/images/tear.png"),
+	preload("res://assets/images/leaf.png"),
+	preload("res://assets/images/fist.png")
+]
 
 func _ready():
 	connect("area_entered", Callable(self, "_on_area_entered"))
+	if bullet_sprite == null:
+		push_error("bullet_sprite is null! Check node name and script attachment.")
+	else:
+		set_texture(0)
 
 func _process(delta):
-	# Move bullet along velocity
 	position += velocity * delta
-	
-	# Remove bullet if it goes off screen (basic bounds check)
-	if position.y > VIEWPORT_HEIGHT + 100 or position.y < -100 or position.x < -100 or position.x > 1080 + 100:
-		queue_free()
 
 func _on_area_entered(area):
 	if area.is_in_group("enemy"):
 		emit_signal("bullet_hit_enemy", area)
 		queue_free()
 
-func _draw():
-	draw_circle(Vector2.ZERO, BULLET_RADIUS, Color.WHITE)
+func set_texture(index: int):
+	if bullet_sprite != null:
+		bullet_sprite.texture = bullet_textures[index]
