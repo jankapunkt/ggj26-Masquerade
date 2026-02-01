@@ -17,6 +17,9 @@ func _ready():
 	size = Vector2(200, 60)
 	# Offset to center the label on the position
 	position -= size / 2
+	# Add random offset (up to 25px in x and y direction)
+	position.x += randf_range(-25.0, 25.0)
+	position.y += randf_range(-25.0, 25.0)
 
 func _process(delta):
 	elapsed_time += delta
