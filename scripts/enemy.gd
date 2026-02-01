@@ -45,6 +45,10 @@ func _ready():
 	# ✅ ensure signal is connected
 	if not hit_sound.finished.is_connected(_on_HitSound_finished):
 		hit_sound.finished.connect(_on_HitSound_finished)
+	
+	# Set texture and scale after sprite is initialized
+	set_enemy_texture()
+	update_sprite_scale()
 
 func set_enemy_texture():
 	# Set texture based on enemy_type
@@ -60,9 +64,7 @@ func init(max_size):
 		max_size = MAX_ENEMY_SIZE
 	current_size = randi_range(MIN_ENEMY_SIZE, max_size)
 	move_speed = remap(current_size, MIN_ENEMY_SIZE, MAX_ENEMY_SIZE, 220, 80)
-	# Set texture first, then scale
-	set_enemy_texture()
-	update_sprite_scale()
+	# Note: Texture and scale are set in _ready() after sprite node is initialized
 
 func _process(delta):
 	hit_sound_timeout -= delta
