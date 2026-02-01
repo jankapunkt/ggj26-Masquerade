@@ -81,12 +81,25 @@ func _process(delta):
 # -------------------------------------------------------
 
 func update_sprite_scale():
-	if sprite and sprite.texture:
-		# Scale sprite to match current_size
-		# Assuming texture has a base size, scale uniformly
-		var texture_size = sprite.texture.get_size()
-		var scale_factor = current_size / max(texture_size.x, texture_size.y)
-		sprite.scale = Vector2(scale_factor, scale_factor)
+	if not sprite:
+		push_warning("Sprite node not found")
+		return
+		
+	if not sprite.texture:
+		push_warning("Sprite texture not set, cannot scale")
+		return
+		
+	# Scale sprite to match current_size
+	var texture_size = sprite.texture.get_size()
+	var max_dimension = max(texture_size.x, texture_size.y)
+	
+	# Guard against invalid texture dimensions
+	if max_dimension <= 0:
+		push_warning("Invalid texture dimensions: %v" % texture_size)
+		return
+		
+	var scale_factor = current_size / max_dimension
+	sprite.scale = Vector2(scale_factor, scale_factor)
 
 # -------------------------------------------------------
 # Damage / shrink
