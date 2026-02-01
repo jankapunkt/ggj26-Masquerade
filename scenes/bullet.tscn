@@ -1,11 +1,35 @@
-[gd_scene load_steps=3 format=3 uid="uid://c8dx5yg8n5xk4"]
+[gd_scene format=3 uid="uid://c8dx5yg8n5xk4"]
 
 [ext_resource type="Script" uid="uid://bqwc7yg8n5xk3" path="res://scripts/bullet.gd" id="1_bullet"]
+[ext_resource type="Texture2D" uid="uid://b15d0ucbmsqxj" path="res://assets/images/leaf.png" id="2_qncy5"]
+[ext_resource type="Texture2D" uid="uid://bo38r1i36sexh" path="res://assets/images/fist.png" id="3_tamys"]
+[ext_resource type="Texture2D" uid="uid://cm7d5r41shwfe" path="res://assets/images/shuriken.png" id="4_26lx3"]
+[ext_resource type="Texture2D" uid="uid://pdaxyssclddt" path="res://assets/images/tear.png" id="5_1cfmv"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_bullet"]
 
-[node name="Bullet" type="Area2D" groups=["bullet"]]
+[node name="Bullet" type="Area2D" unique_id=1249691887 groups=["bullet"]]
 script = ExtResource("1_bullet")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=193217317]
 shape = SubResource("CircleShape2D_bullet")
+
+[node name="leaf" type="Sprite2D" parent="CollisionShape2D" unique_id=1872978104]
+visible = false
+rotation = 3.1415927
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("2_qncy5")
+
+[node name="fist" type="Sprite2D" parent="CollisionShape2D" unique_id=1069852929]
+visible = false
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("3_tamys")
+
+[node name="shuriken" type="Sprite2D" parent="CollisionShape2D" unique_id=563762371]
+visible = false
+scale = Vector2(0.15, 0.15)
+texture = ExtResource("4_26lx3")
+
+[node name="tear" type="Sprite2D" parent="CollisionShape2D" unique_id=807067241]
+scale = Vector2(0.2, 0.2)
+texture = ExtResource("5_1cfmv")
