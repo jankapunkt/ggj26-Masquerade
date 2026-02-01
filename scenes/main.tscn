@@ -23,7 +23,7 @@
 [ext_resource type="Texture2D" uid="uid://nfqgyrc3w8el" path="res://assets/images/shadow-frame6.png" id="17_fv21b"]
 [ext_resource type="Texture2D" uid="uid://t1xju81f5mwh" path="res://assets/images/shadow-frame7.png" id="18_tel4y"]
 [ext_resource type="Texture2D" uid="uid://xritk2rm8l04" path="res://assets/images/shadow-frame8.png" id="19_qkpxi"]
-[ext_resource type="Script" uid="uid://dfodtfgxbvsy3" path="res://scenes/animated_sprite_2d.gd" id="20_5q0nq"]
+[ext_resource type="Script" path="res://scenes/animated_sprite_2d.gd" id="20_5q0nq"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_sugp2"]
 radius = 125.0
@@ -180,14 +180,6 @@ text = "Press ENTER to restart"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="AbilityLabel" type="Label" parent="CanvasLayer" unique_id=1627964520]
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 150.0
-offset_bottom = 40.0
-theme_override_font_sizes/font_size = 20
-text = "Ability: 1"
-
 [node name="PauseScreen" type="Control" parent="CanvasLayer" unique_id=512658798]
 process_mode = 3
 layout_mode = 3
@@ -221,7 +213,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_font_sizes/font_size = 48
-text = "PAUSED"
+text = "MASQUERADE"
 horizontal_alignment = 1
 vertical_alignment = 1
 
@@ -248,20 +240,9 @@ W/S or Arrow Keys: Move up/down
 Q/E: Cycle Ability
 Space: Shoot
 
-Escape: Resume"
+Escape: Pause / Resume"
 horizontal_alignment = 1
 vertical_alignment = 1
-
-[node name="ControlsLabel" type="Label" parent="CanvasLayer" unique_id=977829938]
-offset_left = 10.0
-offset_top = 40.0
-offset_right = 300.0
-offset_bottom = 100.0
-theme_override_font_sizes/font_size = 14
-text = "A/D or Arrows: Move
-1-3 or q and e: Switch Mask
-Space: Shoot
-Escape: Pause"
 
 [node name="AbilityUI" type="Node2D" parent="CanvasLayer" unique_id=1603604810]
 script = ExtResource("4_ability_ui")

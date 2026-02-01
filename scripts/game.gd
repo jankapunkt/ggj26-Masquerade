@@ -93,8 +93,9 @@ const GAUGE_DECREASE = {
 func _ready():
 	self.process_mode = Node.PROCESS_MODE_ALWAYS
 	game_over_screen.visible = false
-	pause_screen.visible = false
-	update_ability_display()
+	pause_screen.visible = true
+	get_tree().paused = true
+	
 	init_player()
 	set_chaser_position()
 	japan.visible = false
@@ -132,7 +133,6 @@ func _process(delta):
 			print_debug('ability pressed', i)
 			current_ability = i
 			playAbilitySwitchSound()
-			update_ability_display()
 			update_player_color()
 	
 	if Input.is_action_just_pressed("ability_left"):
@@ -140,7 +140,6 @@ func _process(delta):
 		if current_ability < 1:
 			current_ability = 4
 		playAbilitySwitchSound()
-		update_ability_display()
 		update_player_color()
 		
 	if Input.is_action_just_pressed("ability_right"):
@@ -148,7 +147,6 @@ func _process(delta):
 		if current_ability > 4:
 			current_ability = 1
 		playAbilitySwitchSound()
-		update_ability_display()
 		update_player_color()
 	
 	# update player
@@ -316,10 +314,6 @@ func get_enemy_color(enemy_type: int) -> Color:
 func init_player():
 	player.position = Vector2(VIEWPORT_WIDTH / 2, VIEWPORT_HEIGHT / 2)
 	update_player_color()
-
-func update_ability_display():
-	var ability_name = ability_config[current_ability]["name"]
-	ability_label.text = "Ability %d: %s" % [current_ability, ability_name]
 	
 func playAbilitySwitchSound():
 	var ability_name = ability_config[current_ability]["name"]
