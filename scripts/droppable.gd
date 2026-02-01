@@ -38,6 +38,8 @@ func _draw():
 		DroppableType.YELLOW:
 			# Draw bomb texture scaled to fit 50x50px
 			if bomb_texture:
+				# Draw as 50x50 square
+				draw_rect(Rect2(-half_size, -half_size, SIZE, SIZE), Color(1.0, 0.0, 0.0, 1.0))
 				draw_texture_rect(bomb_texture, Rect2(-half_size, -half_size, SIZE, SIZE), false)
 		DroppableType.ORANGE:
 			var color = Color(1.0, 0.5, 0.0, 1.0)  # Orange
