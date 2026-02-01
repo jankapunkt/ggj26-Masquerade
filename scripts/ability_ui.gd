@@ -116,12 +116,13 @@ func _draw():
 		var timer_text = "COLLISION DAMAGE: %.1fs" % ability_5_timer
 		var indicator_pos = Vector2(VIEWPORT_WIDTH / 2, ABILITY_5_INDICATOR_Y)
 		
-		# Calculate text size for background
-		var text_width = len(timer_text) * ABILITY_5_FONT_SIZE * 0.6  # Approximate width
+		# Calculate actual text size for background
+		var font = ThemeDB.fallback_font
+		var text_size = font.get_string_size(timer_text, HORIZONTAL_ALIGNMENT_CENTER, -1, ABILITY_5_FONT_SIZE)
 		var bg_rect = Rect2(
-			indicator_pos.x - text_width / 2 - ABILITY_5_BG_PADDING,
+			indicator_pos.x - text_size.x / 2 - ABILITY_5_BG_PADDING,
 			indicator_pos.y - ABILITY_5_FONT_SIZE - ABILITY_5_BG_PADDING / 2,
-			text_width + ABILITY_5_BG_PADDING * 2,
+			text_size.x + ABILITY_5_BG_PADDING * 2,
 			ABILITY_5_FONT_SIZE + ABILITY_5_BG_PADDING
 		)
 		
