@@ -9,11 +9,11 @@ const PULSE_SPEED = 0.005  # Animation speed for pulsing effect
 const PULSE_INTENSITY = 0.2  # Scale factor for pulse animation
 
 # Score display configuration
-const SCORE_X_OFFSET = 150  # Distance from right edge
-const SCORE_Y_OFFSET = 60   # Distance below ability circles
-const SCORE_BG_WIDTH = 140
-const SCORE_BG_HEIGHT = 40
-const SCORE_BG_PADDING_X = 5
+const SCORE_X_OFFSET = 600  # Distance from right edge
+const SCORE_Y_OFFSET = 5   # Distance below ability circles
+const SCORE_BG_WIDTH = 300
+const SCORE_BG_HEIGHT = 60
+const SCORE_BG_PADDING_X = 8
 const SCORE_BG_PADDING_Y = 30
 const SCORE_FONT_SIZE = 24
 
@@ -40,7 +40,7 @@ func _draw():
 	
 	# Calculate center position for all 5 abilities
 	var total_width = 4 * CIRCLE_SPACING  # 4 gaps between 5 circles
-	var start_x = (VIEWPORT_WIDTH - total_width) / 2
+	var start_x = 100
 	
 	# Get current ability and current enemy
 	var current_ability = parent_game_controller.current_ability
@@ -100,7 +100,7 @@ func _draw():
 	# Draw background rectangle for score
 	var text_size = Vector2(SCORE_BG_WIDTH, SCORE_BG_HEIGHT)
 	var rect_pos = score_pos - Vector2(SCORE_BG_PADDING_X, SCORE_BG_PADDING_Y)
-	draw_rect(Rect2(rect_pos, text_size), Color(0.0, 0.0, 0.0, 0.7))
+	draw_rect(Rect2(rect_pos, text_size), Color(0.0, 0.0, 0.0, 0.5))
 	
 	# Draw score text
 	draw_string(ThemeDB.fallback_font, score_pos, score_text, HORIZONTAL_ALIGNMENT_RIGHT, -1, SCORE_FONT_SIZE, Color(1.0, 1.0, 1.0, 1.0))
